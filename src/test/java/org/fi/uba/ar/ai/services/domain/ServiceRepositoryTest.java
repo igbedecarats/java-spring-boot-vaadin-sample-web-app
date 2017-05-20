@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import org.fi.uba.ar.ai.users.domain.User;
+import org.fi.uba.ar.ai.users.domain.UserMother;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +33,10 @@ public class ServiceRepositoryTest {
     categoryCleaning.addSubCategories(
         new LinkedHashSet<>(Arrays.asList(subCategoryHouse, subCategoryOffice)));
     testEntityManager.persist(categoryCleaning);
+    User john = UserMother.createJohnDoe();
+    testEntityManager.persist(john);
 
-    Service service = new Service("House Cleaning!", "I'll clean your House like a boos :)",
+    Service service = new Service(john, "House Cleaning!", "I'll clean your House like a boos :)",
         categoryCleaning, new LinkedHashSet<>(Arrays.asList(subCategoryHouse)));
 
     serviceRepository.save(service);
@@ -41,5 +45,6 @@ public class ServiceRepositoryTest {
     assertThat(result).isEqualTo(service);
     assertThat(result.getSubCategories()).hasSize(1);
     assertThat(result.getSubCategories()).contains(subCategoryHouse);
+    assertThat(result.getProvider()).isEqualTo(john);
   }
 }

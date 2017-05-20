@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.fi.uba.ar.ai.users.domain.User;
 
 @Entity
 @Table(name = "service")
@@ -40,6 +41,10 @@ public class Service {
   @JoinColumn(name = "category_id")
   private ServiceCategory category;
 
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "provider_id")
+  private User provider;
+
   @OneToMany(fetch = FetchType.LAZY)
   @JoinTable(
       name = "service_sub_categories",
@@ -49,8 +54,9 @@ public class Service {
   )
   private Set<ServiceSubCategory> subCategories = new LinkedHashSet<>();
 
-  public Service(String name, String description, ServiceCategory category,
-      Set<ServiceSubCategory> subCategories) {
+  public Service(final User provider, final String name, final String description,
+      final ServiceCategory category, final Set<ServiceSubCategory> subCategories) {
+    this.provider = provider;
     this.name = name;
     this.description = description;
     this.category = category;
@@ -69,19 +75,20 @@ public class Service {
 
     Service service = (Service) o;
 
-    return new EqualsBuilder().append(id, service.id).append(name, service.name)
-        .append(description, service.description).append(category, service.category).isEquals();
+    return new EqualsBuilder().append(id, service.id).append(provider, service.provider)
+        .append(name, service.name).append(description, service.description)
+        .append(category, service.category).isEquals();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37).append(id).append(name).append(description).append(category)
-        .toHashCode();
+    return new HashCodeBuilder(17, 37).append(id).append(provider).append(name).append(description)
+        .append(category).toHashCode();
   }
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this).append("id", id).append("name", name)
+    return new ToStringBuilder(this).append("id", id).append("provider", provider).append("name", name)
         .append("description", description).append("category", category).toString();
   }
 

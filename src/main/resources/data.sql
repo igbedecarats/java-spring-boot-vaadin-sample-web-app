@@ -16,3 +16,7 @@ INSERT INTO service_sub_category (name, category_id) VALUES ('Diseño', 2);
 INSERT INTO service_sub_category (name, category_id) VALUES ('Lavandería y Tintorería', 2);
 INSERT INTO service_sub_category (name, category_id) VALUES ('Hogar y Oficina', 3);
 INSERT INTO service_sub_category (name, category_id) VALUES ('Tecnología', 3);
+
+-- Users
+INSERT INTO user (username, encrypted_password, email, first_name, last_name)
+VALUES ('johnsmith', 'x28', 'john.smith@gmail.com', 'John', 'Smith');

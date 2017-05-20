@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,13 @@ public class ServiceSubCategoryRepositoryTest {
     assertThat(category.getSubCategories()).hasSize(2);
     ServiceSubCategory subCategory = serviceSubCategoryRepository.findOne(subCategoryHouse.getId());
     assertThat(subCategory.getCategory()).isEqualTo(categoryCleaning);
+  }
+
+  @Test
+  public void shouldFindByIds() {
+    List<ServiceSubCategory> result = serviceSubCategoryRepository
+        .findByIdIn(Arrays.asList(Long.valueOf(1L), Long.valueOf(2L)));
+    assertThat(result).hasSize(2);
   }
 
 }
