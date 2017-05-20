@@ -11,9 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -21,7 +21,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @Entity
 @Table(name = "service_category")
 @NoArgsConstructor
-@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 public class ServiceCategory {
@@ -35,6 +34,15 @@ public class ServiceCategory {
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "category")
   private Set<ServiceSubCategory> subCategories = new LinkedHashSet<>();
+
+  public ServiceCategory(final String name) {
+    this.name = name;
+  }
+
+  public void addSubCategories(final Set<ServiceSubCategory> subCategories) {
+    Validate.notNull(subCategories, "The Sub Categories cannot be null");
+    this.subCategories.addAll(subCategories);
+  }
 
   @Override
   public boolean equals(final Object o) {

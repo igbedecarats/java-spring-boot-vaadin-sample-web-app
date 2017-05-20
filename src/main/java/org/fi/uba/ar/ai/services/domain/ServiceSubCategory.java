@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -18,7 +17,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @Entity
 @Table(name = "service_sub_category")
 @NoArgsConstructor
-@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 public class ServiceSubCategory {
@@ -31,8 +29,13 @@ public class ServiceSubCategory {
   private String name;
 
   @ManyToOne
-  @JoinColumn(name = "category_id")
+  @JoinColumn(name = "category_id", nullable = false)
   private ServiceCategory category;
+
+  public ServiceSubCategory(final String name, final ServiceCategory category) {
+    this.name = name;
+    this.category = category;
+  }
 
   @Override
   public boolean equals(final Object o) {
