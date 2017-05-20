@@ -1,0 +1,33 @@
+logging:
+  file: logs/serviceya.log
+  level:
+    org.springframework: INFO
+    com.globant.smu: DEBUG
+
+endpoints:
+  enabled: false
+  info:
+    enabled: true
+  health:
+    sensitive: false
+    enabled: true
+    time-to-live: 20000
+
+info:
+  build:
+    group: @project.groupId@
+    artifact: @project.artifactId@
+    version: @project.version@
+    name: @project.name@
+
+spring:
+
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    initialize: false
+
+  jpa:
+    show-sql: true
