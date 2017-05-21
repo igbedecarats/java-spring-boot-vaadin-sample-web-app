@@ -31,3 +31,7 @@ spring:
 
   jpa:
     show-sql: true
+
+google:
+  maps:
+    key: AIzaSyBNJvYQ-t6dymsHr6bI6UtSH9MlB5ujlTk

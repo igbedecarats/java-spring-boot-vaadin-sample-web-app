@@ -5,12 +5,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.fi.uba.ar.ai.locations.domain.Location;
 
 @Entity
 @Table(name = "user")
@@ -27,16 +31,24 @@ public class User {
   private String username;
 
   @Column(name = "encrypted_password", nullable = false)
+  @Setter
   private String encryptedPassword;
 
   @Column(name = "email", nullable = false, unique = true)
+  @Setter
   private String email;
 
   @Column(name = "first_name", nullable = false)
+  @Setter
   private String firstName;
 
   @Column(name = "last_name", nullable = false)
   private String lastName;
+
+  @ManyToOne
+  @JoinColumn(name = "preferred_location_id")
+  @Setter
+  private Location location;
 
   public User(String username, String encryptedPassword, String email, String firstName,
       String lastName) {

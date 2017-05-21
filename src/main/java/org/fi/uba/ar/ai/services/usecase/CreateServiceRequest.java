@@ -12,6 +12,7 @@ public class CreateServiceRequest {
   private long providerId;
   private String name;
   private String description;
+  private long locationId;
   private long categoryId;
   private List<Long> subCategoryIds = new ArrayList<>();
 

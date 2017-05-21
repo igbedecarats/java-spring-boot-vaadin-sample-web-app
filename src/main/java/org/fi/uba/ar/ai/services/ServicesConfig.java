@@ -1,5 +1,6 @@
 package org.fi.uba.ar.ai.services;
 
+import org.fi.uba.ar.ai.locations.domain.LocationRepository;
 import org.fi.uba.ar.ai.services.domain.ServiceCategoryRepository;
 import org.fi.uba.ar.ai.services.domain.ServiceRepository;
 import org.fi.uba.ar.ai.services.domain.ServiceSubCategoryRepository;
@@ -24,10 +25,13 @@ public class ServicesConfig {
   @Autowired
   private UserRepository userRepository;
 
+  @Autowired
+  private LocationRepository locationRepository;
+
   @Bean
   public ServiceInteractor serviceInteractor() {
     return new ServiceInteractor(serviceRepository, serviceCategoryRepository,
-        serviceSubCategoryRepository, userRepository);
+        serviceSubCategoryRepository, userRepository, locationRepository);
   }
 
 }

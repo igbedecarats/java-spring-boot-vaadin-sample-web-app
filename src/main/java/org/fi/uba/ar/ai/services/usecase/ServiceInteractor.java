@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.Validate;
+import org.fi.uba.ar.ai.locations.domain.Location;
+import org.fi.uba.ar.ai.locations.domain.LocationRepository;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.domain.ServiceCategory;
 import org.fi.uba.ar.ai.services.domain.ServiceCategoryRepository;
@@ -25,14 +27,18 @@ public class ServiceInteractor {
 
   private UserRepository userRepository;
 
+  private LocationRepository locationRepository;
+
   public ServiceInteractor(ServiceRepository serviceRepository,
       ServiceCategoryRepository serviceCategoryRepository,
       ServiceSubCategoryRepository serviceSubCategoryRepository,
-      UserRepository userRepository) {
+      UserRepository userRepository,
+      LocationRepository locationRepository) {
     this.serviceRepository = serviceRepository;
     this.serviceCategoryRepository = serviceCategoryRepository;
     this.serviceSubCategoryRepository = serviceSubCategoryRepository;
     this.userRepository = userRepository;
+    this.locationRepository = locationRepository;
   }
 
   public Service find(final long serviceId) {
@@ -47,7 +53,12 @@ public class ServiceInteractor {
     Validate.notNull(request, "The CreateServiceRequest cannot be null.");
     User provider = userRepository.findOne(request.getProviderId());
     Validate
-        .notNull(provider, "The provider with id " + request.getProviderId() + " doesn't exist.");
+        .notNull(provider,
+            "The provider with id " + request.getProviderId() + " doesn't exist.");
+    Location location = locationRepository.findOne(request.getLocationId());
+    Validate
+        .notNull(location,
+            "The location with id " + request.getLocationId() + " doesn't exist.");
     ServiceCategory category = serviceCategoryRepository.findOne(request.getCategoryId());
     Validate
         .notNull(category, "The category with id " + request.getCategoryId() + " doesn't exist.");
@@ -55,8 +66,8 @@ public class ServiceInteractor {
         .findByIdIn(request.getSubCategoryIds());
     subCategories.stream()
         .forEach(subCategory -> validateSubCategoryBelongsToCategory(subCategory, category));
-    Service service = new Service(provider, request.getName(), request.getDescription(), category,
-        new LinkedHashSet<>(subCategories));
+    Service service = new Service(provider, request.getName(), request.getDescription(), location,
+        category, new LinkedHashSet<>(subCategories));
     return serviceRepository.save(service);
   }
 

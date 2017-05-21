@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.fi.uba.ar.ai.locations.domain.Location;
 import org.fi.uba.ar.ai.users.domain.User;
 
 @Entity
@@ -45,6 +46,10 @@ public class Service {
   @JoinColumn(name = "provider_id")
   private User provider;
 
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "location_id")
+  private Location location;
+
   @OneToMany(fetch = FetchType.LAZY)
   @JoinTable(
       name = "service_sub_categories",
@@ -55,10 +60,12 @@ public class Service {
   private Set<ServiceSubCategory> subCategories = new LinkedHashSet<>();
 
   public Service(final User provider, final String name, final String description,
-      final ServiceCategory category, final Set<ServiceSubCategory> subCategories) {
+      final Location location, final ServiceCategory category,
+      final Set<ServiceSubCategory> subCategories) {
     this.provider = provider;
     this.name = name;
     this.description = description;
+    this.location = location;
     this.category = category;
     this.subCategories = subCategories;
   }
@@ -88,8 +95,9 @@ public class Service {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this).append("id", id).append("provider", provider).append("name", name)
-        .append("description", description).append("category", category).toString();
+    return new ToStringBuilder(this).append("id", id).append("provider", provider)
+        .append("name", name).append("description", description).append("category", category)
+        .toString();
   }
 
 }
