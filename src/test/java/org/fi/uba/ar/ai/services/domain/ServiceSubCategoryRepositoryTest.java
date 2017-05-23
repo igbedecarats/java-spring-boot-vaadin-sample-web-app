@@ -35,7 +35,8 @@ public class ServiceSubCategoryRepositoryTest {
     ServiceCategory category = testEntityManager
         .find(ServiceCategory.class, categoryCleaning.getId());
     assertThat(category.getSubCategories()).hasSize(2);
-    ServiceSubCategory subCategory = serviceSubCategoryRepository.findOne(subCategoryHouse.getId());
+    ServiceSubCategory subCategory = serviceSubCategoryRepository.findOne(subCategoryHouse.getId())
+        .get();
     assertThat(subCategory.getCategory()).isEqualTo(categoryCleaning);
   }
 

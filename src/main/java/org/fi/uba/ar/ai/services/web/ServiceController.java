@@ -25,7 +25,8 @@ public class ServiceController {
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  public ResponseEntity<ServiceDto> createService(@RequestBody final CreateServiceRequest request) {
+  public ResponseEntity<ServiceDto> createService(
+      @RequestBody(required = false) final CreateServiceRequest request) {
     return ResponseEntity.ok(ServiceDto.toDto(interactor.create(request)));
   }
 

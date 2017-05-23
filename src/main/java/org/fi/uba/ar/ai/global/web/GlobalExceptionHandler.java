@@ -29,7 +29,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   private ResponseEntity<?> logAndReturnResponseEntityForError(final Exception ex,
       final HttpStatus httpStatus) {
-    logger.error(ex);
+    logger.error(ex.getMessage(), ex.getCause());
     HttpApiError error = new HttpApiError(httpStatus, ex.getMessage());
     return new ResponseEntity<Object>(error, new HttpHeaders(), error.getStatus());
   }

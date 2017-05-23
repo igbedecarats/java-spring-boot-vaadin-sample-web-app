@@ -1,8 +1,6 @@
 package org.fi.uba.ar.ai.services.usecase;
 
 import com.google.common.collect.Sets;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.Validate;
@@ -51,31 +49,23 @@ public class ServiceInteractor {
 
   public Service create(CreateServiceRequest request) {
     Validate.notNull(request, "The CreateServiceRequest cannot be null.");
-    User provider = userRepository.findOne(request.getProviderId());
-    Validate
-        .notNull(provider,
-            "The provider with id " + request.getProviderId() + " doesn't exist.");
-    Location location = locationRepository.findOne(request.getLocationId());
-    Validate
-        .notNull(location,
-            "The location with id " + request.getLocationId() + " doesn't exist.");
-    ServiceCategory category = serviceCategoryRepository.findOne(request.getCategoryId());
-    Validate
-        .notNull(category, "The category with id " + request.getCategoryId() + " doesn't exist.");
-    List<ServiceSubCategory> subCategories = serviceSubCategoryRepository
-        .findByIdIn(request.getSubCategoryIds());
-    subCategories.stream()
-        .forEach(subCategory -> validateSubCategoryBelongsToCategory(subCategory, category));
-    Service service = new Service(provider, request.getName(), request.getDescription(), location,
-        category, new LinkedHashSet<>(subCategories));
+    User provider = userRepository.findOne(request.getProviderId()).orElseThrow(
+        () -> new EntityNotFoundException(
+            "The provider with id " + request.getProviderId() + " doesn't exist."));
+    Location location = locationRepository.findOne(request.getLocationId()).orElseThrow(
+        () -> new EntityNotFoundException(
+            "The location with id " + request.getLocationId() + " doesn't exist."));
+    ServiceCategory category = this.getServiceCategory(request.getCategoryId());
+    ServiceSubCategory subCategory = null;
+    if (request.getSubCategoryId() != 0) {
+      subCategory = serviceSubCategoryRepository.findOne(request.getSubCategoryId())
+          .orElseThrow(() -> new EntityNotFoundException(
+              "The sub category with id " + request.getSubCategoryId() + " doesn't exist."));
+    }
+    Service service = new Service(request.getName(), request.getDescription(), provider, location,
+        category, subCategory, request.getStartTime(), request.getEndTime(),
+        request.getStartDay(), request.getEndDay());
     return serviceRepository.save(service);
-  }
-
-  private void validateSubCategoryBelongsToCategory(final ServiceSubCategory subCategory,
-      final ServiceCategory category) {
-    Validate.isTrue(category.getSubCategories().contains(subCategory),
-        "The Category with id " + category.getId() + " doesn't contain the Sub Category with id "
-            + subCategory.getId());
   }
 
   public Set<ServiceCategory> getServiceCategories() {
@@ -83,12 +73,7 @@ public class ServiceInteractor {
   }
 
   public ServiceCategory getServiceCategory(long categoryId) {
-    ServiceCategory category = serviceCategoryRepository.findOne(categoryId);
-    if (category == null) {
-      throw new EntityNotFoundException("The Category with id " + categoryId + " doesn't exist.");
-    }
-    return category;
+    return serviceCategoryRepository.findOne(categoryId).orElseThrow(
+        () -> new EntityNotFoundException("The category with id " + categoryId + " doesn't exist."));
   }
-
-
 }

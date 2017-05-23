@@ -8,12 +8,14 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class CreateServiceRequest {
-
   private long providerId;
   private String name;
   private String description;
   private long locationId;
   private long categoryId;
-  private List<Long> subCategoryIds = new ArrayList<>();
-
+  private long subCategoryId;
+  private String startTime;
+  private String endTime;
+  private Integer startDay;
+  private Integer endDay;
 }

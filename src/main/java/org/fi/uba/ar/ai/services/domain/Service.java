@@ -1,20 +1,24 @@
 package org.fi.uba.ar.ai.services.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.time.DateTimeException;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -36,11 +40,18 @@ public class Service {
   private String name;
 
   @Column(name = "description", nullable = false)
+  @Setter
   private String description;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "category_id")
+  @Setter
   private ServiceCategory category;
+
+  @ManyToOne
+  @JoinColumn(name = "sub_category_id")
+  @Setter
+  private ServiceSubCategory subCategory;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "provider_id")
@@ -48,26 +59,104 @@ public class Service {
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "location_id")
+  @Setter
   private Location location;
 
-  @OneToMany(fetch = FetchType.LAZY)
-  @JoinTable(
-      name = "service_sub_categories",
-      joinColumns = {@JoinColumn(name = "service_id", referencedColumnName = "id")},
-      inverseJoinColumns = {
-          @JoinColumn(name = "sub_category_id", referencedColumnName = "id", unique = true)}
-  )
-  private Set<ServiceSubCategory> subCategories = new LinkedHashSet<>();
+  @Column(name = "start_time")
+  private String startTime;
 
-  public Service(final User provider, final String name, final String description,
-      final Location location, final ServiceCategory category,
-      final Set<ServiceSubCategory> subCategories) {
-    this.provider = provider;
+  @Column(name = "end_time")
+  private String endTime;
+
+  @Column(name = "start_day")
+  private Integer startDay;
+
+  @Column(name = "end_day")
+  private Integer endDay;
+
+  public Service(String name, String description,
+      ServiceCategory category, User provider, Location location) {
+    this(name, description, provider, location, category, null, null, null, null, null);
+  }
+
+  public Service(String name, String description,
+      User provider, Location location, ServiceCategory category,
+      ServiceSubCategory subCategory, String startTime, String endTime,
+      Integer startDay, Integer endDay) {
+    Validate.notBlank(name, "The Service name cannot be blank.");
+    Validate.notBlank(description, "The Service description cannot be blank.");
+    Validate.notNull(provider, "The Service provider cannot be blank.");
+    Validate.notNull(location, "The Service location cannot be blank.");
+    Validate.notNull(category, "The Service category cannot be blank.");
     this.name = name;
     this.description = description;
-    this.location = location;
     this.category = category;
-    this.subCategories = subCategories;
+    this.provider = provider;
+    this.location = location;
+    this.subCategory = subCategory;
+    setTimesAndDays(startTime, endTime, startDay, endDay);
+  }
+
+  public void setTimesAndDays(String startTime, String endTime, Integer startDay,
+      Integer endDay) {
+    if (StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime) && startDay != null
+        && endDay != null) {
+      validateDayTimesRange(startTime, endTime);
+      validateDaysRange(startDay, endDay);
+      this.startTime = startTime;
+      this.endTime = endTime;
+      this.startDay = startDay;
+      this.endDay = endDay;
+    } else {
+      this.startTime = null;
+      this.endTime = null;
+      this.startDay = null;
+      this.endDay = null;
+    }
+  }
+
+  public LocalTime getLocalStartTime() {
+    return LocalTime.parse(startTime);
+  }
+
+  public LocalTime getLocalEndTime() {
+    return LocalTime.parse(endTime);
+  }
+
+  public String getLocalizedStartDay() {
+    return getLocalizedDayOfTheWeek(startDay);
+  }
+
+  public String getLocalizedEndDay() {
+    return getLocalizedDayOfTheWeek(endDay);
+  }
+
+  private String getLocalizedDayOfTheWeek(final Integer dayOfTheWeek) {
+    return StringUtils.capitalize(
+        DayOfWeek.of(dayOfTheWeek).getDisplayName(TextStyle.FULL, Locale.forLanguageTag("es")));
+  }
+
+  private void validateDaysRange(final Integer startDay, final Integer endDay) {
+    try {
+      DayOfWeek.of(startDay);
+      DayOfWeek.of(endDay);
+      Validate.isTrue(startDay <= endDay, "The Start Day must be less or equal to the End Day");
+    } catch (DateTimeException e) {
+      throw new IllegalArgumentException("Invalid Day of the Week", e);
+    }
+  }
+
+  private void validateDayTimesRange(final String startTime, final String endTime) {
+    try {
+      LocalTime localStartTime = LocalTime.parse(startTime);
+      LocalTime localEndTime = LocalTime.parse(endTime);
+      if (!localStartTime.equals(localEndTime)) {
+        Validate.isTrue(localStartTime.isBefore(localEndTime),
+            "The Start Time must be earlier than the End Time.");
+      }
+    } catch (DateTimeParseException e) {
+      throw new IllegalArgumentException("Invalid Time of the Day: " + e.getParsedString(), e);
+    }
   }
 
   @Override
@@ -99,5 +188,4 @@ public class Service {
         .append("name", name).append("description", description).append("category", category)
         .toString();
   }
-
 }
