@@ -3,6 +3,8 @@ package org.fi.uba.ar.ai.users.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -50,13 +52,18 @@ public class User {
   @Setter
   private Location location;
 
+  @Setter
+  @Enumerated(EnumType.STRING)
+  private UserRole role;
+
   public User(String username, String encryptedPassword, String email, String firstName,
-      String lastName) {
+      String lastName, UserRole userRole) {
     this.username = username;
     this.encryptedPassword = encryptedPassword;
     this.email = email;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.role = userRole;
   }
 
   @Override

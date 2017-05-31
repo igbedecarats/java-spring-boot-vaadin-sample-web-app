@@ -7,4 +7,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
   Optional<User> findOne(final long id);
 
+  User findByUsername(String username);
 }
