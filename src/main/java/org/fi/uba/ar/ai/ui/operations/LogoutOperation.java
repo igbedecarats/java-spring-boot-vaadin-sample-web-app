@@ -23,20 +23,25 @@ import org.vaadin.spring.security.managed.VaadinManagedSecurity;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
+/**
+ * Operation that logs the user out.
+ *
+ * @author Petter Holmström (petter@vaadin.com)
+ */
 @SpringComponent
 @SideBarItem(sectionId = Sections.OPERATIONS, caption = "Logout")
 @FontAwesomeIcon(FontAwesome.POWER_OFF)
 public class LogoutOperation implements Runnable {
 
-  private final VaadinManagedSecurity vaadinSecurity;
+    private final VaadinManagedSecurity vaadinSecurity;
 
-  @Autowired
-  public LogoutOperation(VaadinManagedSecurity vaadinSecurity) {
-    this.vaadinSecurity = vaadinSecurity;
-  }
+    @Autowired
+    public LogoutOperation(VaadinManagedSecurity vaadinSecurity) {
+        this.vaadinSecurity = vaadinSecurity;
+    }
 
-  @Override
-  public void run() {
-    vaadinSecurity.logout("?goodbye");
-  }
+    @Override
+    public void run() {
+        vaadinSecurity.logout("?goodbye");
+    }
 }

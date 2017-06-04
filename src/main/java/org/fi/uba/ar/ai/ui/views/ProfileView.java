@@ -19,37 +19,34 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
 import org.fi.uba.ar.ai.ui.Sections;
-import org.fi.uba.ar.ai.ui.backend.MyBackend;
+import org.fi.uba.ar.ai.users.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
-@Secured("ROLE_ADMIN")
-@SpringView(name = "admin")
-@SideBarItem(sectionId = Sections.VIEWS, caption = "Admin View")
-@FontAwesomeIcon(FontAwesome.COGS)
-public class AdminView extends CustomComponent implements View {
-
-  private final MyBackend backend;
+@SpringView(name = "profile")
+@SideBarItem(sectionId = Sections.ACCOUNT, caption = "Profile")
+@FontAwesomeIcon(FontAwesome.ARCHIVE)
+public class ProfileView extends CustomComponent implements View {
 
   @Autowired
-  public AdminView(MyBackend backend) {
-    this.backend = backend;
-    Button button = new Button("Call admin backend", new Button.ClickListener() {
-      @Override
-      public void buttonClick(Button.ClickEvent event) {
-        Notification.show(AdminView.this.backend.adminOnlyEcho("Hello Admin World!"));
-      }
-    });
-    setCompositionRoot(button);
+  private final UserRepository userRepository;
+
+  @Autowired
+  public ProfileView(final UserRepository userRepository) {
+    this.userRepository = userRepository;
+    VerticalLayout root = new VerticalLayout();
+    setCompositionRoot(root);
+    root.addComponent(new Label("Hi " + SpringContextUserHolder.getUser().getFirstName() + "!"));
   }
 
   @Override
   public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
+
   }
 }

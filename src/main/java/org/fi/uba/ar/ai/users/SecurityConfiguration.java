@@ -7,17 +7,13 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.vaadin.spring.security.config.AuthenticationManagerConfigurer;
 
 @Configuration
-public class SecurityConfiguration  implements AuthenticationManagerConfigurer {
+public class SecurityConfiguration implements AuthenticationManagerConfigurer {
 
   @Autowired
   private UserRepository userRepository;
 
   @Override
   public void configure(AuthenticationManagerBuilder auth) throws Exception {
-//    auth.inMemoryAuthentication()
-//        .withUser("user").password("user").roles("USER")
-//        .and()
-//        .withUser("admin").password("admin").roles("ADMIN");
     auth.authenticationProvider(new UserAuthenticationProvider(userRepository));
   }
 }

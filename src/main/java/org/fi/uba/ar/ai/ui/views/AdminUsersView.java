@@ -19,34 +19,37 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
+import java.util.List;
 import org.fi.uba.ar.ai.ui.Sections;
-import org.fi.uba.ar.ai.ui.backend.MyBackend;
+import org.fi.uba.ar.ai.users.domain.User;
+import org.fi.uba.ar.ai.users.usecase.UserInteractor;
+import org.jsoup.helper.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
-@Secured({"ROLE_USER", "ROLE_ADMIN"})
-@SpringView(name = "user")
-@SideBarItem(sectionId = Sections.VIEWS, caption = "User View")
-@FontAwesomeIcon(FontAwesome.ARCHIVE)
-public class UserView extends CustomComponent implements View {
+@Secured("ROLE_ADMIN")
+@SpringView(name = "users")
+@SideBarItem(sectionId = Sections.ADMIN, caption = "Users")
+@FontAwesomeIcon(FontAwesome.COGS)
+public class AdminUsersView extends CustomComponent implements View {
 
-  private final MyBackend backend;
+  private UserInteractor userInteractor;
 
   @Autowired
-  public UserView(MyBackend backend) {
-    this.backend = backend;
-    Button button = new Button("Call user backend", new Button.ClickListener() {
-      @Override
-      public void buttonClick(Button.ClickEvent event) {
-        Notification.show(UserView.this.backend.echo("Hello User World!"));
-      }
+  public AdminUsersView(final UserInteractor userInteractor) {
+    Validate.notNull(userInteractor, "The User Interactor cannot be null.");
+    this.userInteractor = userInteractor;
+    List<User> users = userInteractor.findAll();
+    VerticalLayout root = new VerticalLayout();
+    setCompositionRoot(root);
+    users.stream().forEach(user -> {
+      root.addComponent(new Label(user.toString()));
     });
-    setCompositionRoot(button);
   }
 
   @Override

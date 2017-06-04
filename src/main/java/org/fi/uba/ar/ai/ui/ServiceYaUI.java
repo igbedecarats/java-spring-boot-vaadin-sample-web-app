@@ -91,12 +91,7 @@ public class ServiceYaUI extends UI {
   @EventBusListenerMethod
   void onLogin(SuccessfulLoginEvent loginEvent) {
     if (loginEvent.getSource().equals(this)) {
-      access(new Runnable() {
-        @Override
-        public void run() {
-          showMainScreen();
-        }
-      });
+      access(() -> showMainScreen());
     } else {
       // We cannot inject the Main Screen if the event was fired from another UI, since that UI's scope would be active
       // and the main screen for that UI would be injected. Instead, we just reload the page and let the init(...) method

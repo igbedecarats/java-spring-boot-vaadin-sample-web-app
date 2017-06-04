@@ -28,11 +28,11 @@ import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @SpringView(name = "")
-@SideBarItem(sectionId = Sections.VIEWS, caption = "Home", order = 0)
+@SideBarItem(sectionId = Sections.SERVICES, caption = "Search", order = 0)
 @FontAwesomeIcon(FontAwesome.HOME)
-public class HomeView extends VerticalLayout implements View {
+public class SearchServicesView extends VerticalLayout implements View {
 
-  public HomeView() {
+  public SearchServicesView() {
     setSpacing(true);
     setMargin(true);
 
