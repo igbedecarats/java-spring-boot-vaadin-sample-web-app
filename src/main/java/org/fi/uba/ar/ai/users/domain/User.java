@@ -30,11 +30,12 @@ public class User {
   private long id;
 
   @Column(name = "username", nullable = false, unique = true)
+  @Setter
   private String username;
 
-  @Column(name = "encrypted_password", nullable = false)
+  @Column(name = "password", nullable = false)
   @Setter
-  private String encryptedPassword;
+  private String password;
 
   @Column(name = "email", nullable = false, unique = true)
   @Setter
@@ -45,6 +46,7 @@ public class User {
   private String firstName;
 
   @Column(name = "last_name", nullable = false)
+  @Setter
   private String lastName;
 
   @ManyToOne
@@ -56,10 +58,10 @@ public class User {
   @Enumerated(EnumType.STRING)
   private UserRole role;
 
-  public User(String username, String encryptedPassword, String email, String firstName,
+  public User(String username, String password, String email, String firstName,
       String lastName, UserRole userRole) {
     this.username = username;
-    this.encryptedPassword = encryptedPassword;
+    this.password = password;
     this.email = email;
     this.firstName = firstName;
     this.lastName = lastName;

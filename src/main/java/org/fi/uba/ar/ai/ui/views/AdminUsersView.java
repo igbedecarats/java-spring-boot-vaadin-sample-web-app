@@ -19,10 +19,14 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 import java.util.List;
+import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
+import org.fi.uba.ar.ai.locations.usecase.LocationInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
 import org.fi.uba.ar.ai.users.domain.User;
 import org.fi.uba.ar.ai.users.usecase.UserInteractor;
@@ -40,19 +44,64 @@ public class AdminUsersView extends CustomComponent implements View {
 
   private UserInteractor userInteractor;
 
+  private LocationInteractor locationInteractor;
+
+  private Grid<User> grid = new Grid<>(User.class);
+
+  private UserAdminForm form;
+
   @Autowired
-  public AdminUsersView(final UserInteractor userInteractor) {
+  public AdminUsersView(final UserInteractor userInteractor,
+      final LocationInteractor locationInteractor) {
     Validate.notNull(userInteractor, "The User Interactor cannot be null.");
+    Validate.notNull(locationInteractor, "The Location Interactor cannot be null.");
     this.userInteractor = userInteractor;
-    List<User> users = userInteractor.findAll();
-    VerticalLayout root = new VerticalLayout();
-    setCompositionRoot(root);
-    users.stream().forEach(user -> {
-      root.addComponent(new Label(user.toString()));
+    this.locationInteractor = locationInteractor;
+
+    User loggedUser = SpringContextUserHolder.getUser();
+    form = new UserAdminForm(loggedUser, userInteractor, locationInteractor, this);
+
+    final VerticalLayout layout = new VerticalLayout();
+
+    Button addUserBtn = new Button("Add new customer");
+    addUserBtn.addClickListener(e -> {
+      grid.asSingleSelect().clear();
+      form.setUser(new User());
+    });
+
+    HorizontalLayout toolbar = new HorizontalLayout(addUserBtn);
+
+    grid.setColumns("id", "username", "firstName", "lastName", "email");
+
+    HorizontalLayout main = new HorizontalLayout(grid, form);
+    main.setSizeFull();
+    grid.setSizeFull();
+    main.setExpandRatio(grid, 1);
+
+    layout.addComponents(toolbar, main);
+
+    updateList();
+
+    setCompositionRoot(layout);
+
+    form.setVisible(false);
+
+    grid.asSingleSelect().addValueChangeListener(event -> {
+      if (event.getValue() == null) {
+        form.setVisible(false);
+      } else {
+        form.setUser(event.getValue());
+      }
     });
   }
 
+
   @Override
   public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
+  }
+
+  public void updateList() {
+    List<User> users = userInteractor.findAll();
+    grid.setItems(users);
   }
 }

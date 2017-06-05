@@ -8,6 +8,8 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
   Optional<Location> findOne(final long id);
 
+  Location findByName(String locationName);
+
   List<Location> findByNameIgnoreCaseContaining(final String name);
 
   Location findByNameIgnoreCase(final String name);

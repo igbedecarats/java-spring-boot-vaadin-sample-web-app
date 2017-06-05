@@ -24,4 +24,16 @@ public class UserInteractor {
   public List<User> findAll() {
     return (List<User>) userRepository.findAll();
   }
+
+  public User find(long id) {
+    return userRepository.findOne(id).get();
+  }
+
+  public void delete(User user) {
+    userRepository.delete(user);
+  }
+
+  public User save(User user) {
+    return userRepository.save(user);
+  }
 }
