@@ -20,9 +20,9 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-import java.util.List;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalSplitPanel;
+import javax.annotation.PostConstruct;
 import org.fi.uba.ar.ai.ui.Sections;
 import org.fi.uba.ar.ai.users.domain.User;
 import org.fi.uba.ar.ai.users.usecase.UserInteractor;
@@ -40,16 +40,61 @@ public class AdminUsersView extends CustomComponent implements View {
 
   private UserInteractor userInteractor;
 
+  private HorizontalSplitPanel splitter = new HorizontalSplitPanel();
+  private Grid<User> grid = new Grid(User.class);
+  UserView editor = new UserView(this::saveUser, this::editSelectedUser, this::deleteUser);
+
   @Autowired
   public AdminUsersView(final UserInteractor userInteractor) {
     Validate.notNull(userInteractor, "The User Interactor cannot be null.");
     this.userInteractor = userInteractor;
-    List<User> users = userInteractor.findAll();
-    VerticalLayout root = new VerticalLayout();
-    setCompositionRoot(root);
-    users.stream().forEach(user -> {
-      root.addComponent(new Label(user.toString()));
+    splitter.setSizeFull();
+    grid.setSizeFull();
+    editor.setSizeFull();
+
+    splitter.setFirstComponent(grid);
+    splitter.setSecondComponent(editor);
+
+    setCompositionRoot(splitter);
+  }
+
+  @PostConstruct
+  public void init() {
+    grid.asSingleSelect().addValueChangeListener(evt -> {
+      editSelectedUser();
     });
+    listUsers();
+    grid.setColumns("firstName","lastName","email");
+    selectDefault();
+  }
+
+  private void saveUser(User person) {
+    User newUser = userInteractor.save(person);
+    listUsers();
+    grid.select(newUser);
+  }
+
+  private void deleteUser(User person) {
+    userInteractor.delete(person);
+    listUsers();
+    selectDefault();
+  }
+
+  private void editSelectedUser() {
+    User selected = grid.asSingleSelect().getValue();
+    if(selected != null) {
+      editor.setUser(userInteractor.find(selected.getId()));
+    }else {
+      selectDefault();
+    }
+  }
+
+  private void selectDefault() {
+    grid.select(userInteractor.findAll().stream().findFirst().get());
+  }
+
+  private void listUsers() {
+    grid.setItems(userInteractor.findAll());
   }
 
   @Override

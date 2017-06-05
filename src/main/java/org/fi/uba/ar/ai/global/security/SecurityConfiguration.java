@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.users;
+package org.fi.uba.ar.ai.global.security;
 
 import org.fi.uba.ar.ai.users.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
