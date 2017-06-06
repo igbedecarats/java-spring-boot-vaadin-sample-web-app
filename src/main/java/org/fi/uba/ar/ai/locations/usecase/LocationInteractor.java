@@ -33,8 +33,15 @@ public class LocationInteractor {
   }
 
   public Location create(final CreateLocationRequest request) {
+    Coordinate coordinateForLocation;
+    try {
+      coordinateForLocation = findCoordinateForLocation(request.getName());
+
+    } catch (Exception e) {
+      coordinateForLocation = new Coordinate();
+    }
     return repository.save(new Location(request.getName(), request.getArea(),
-        findCoordinateForLocation(request.getName())));
+        coordinateForLocation));
   }
 
   private Coordinate findCoordinateForLocation(final String name) {
@@ -70,6 +77,26 @@ public class LocationInteractor {
     double latTop = location.getCoordinate().getLatitude() + 0.1;
     double lngDown = location.getCoordinate().getLongitude() - 0.1;
     double lngTop = location.getCoordinate().getLongitude() + 0.1;
-    return repository.findByCoordinateLatitudeBetweenAndCoordinateLongitudeBetween(latDown, latTop, lngDown, lngTop);
+    return repository
+        .findByCoordinateLatitudeBetweenAndCoordinateLongitudeBetween(latDown, latTop, lngDown,
+            lngTop);
+  }
+
+  public void delete(Location location) {
+    repository.delete(location);
+  }
+
+  public Location save(Location location) {
+    Coordinate coordinateForLocation;
+    try {
+      coordinateForLocation = findCoordinateForLocation(location.getName());
+
+    } catch (Exception e) {
+      coordinateForLocation = new Coordinate();
+    }
+    if (coordinateForLocation.getLatitude() != 0 & coordinateForLocation.getLongitude() != 0) {
+      location.setCoordinate(coordinateForLocation);
+    }
+    return repository.save(location);
   }
 }

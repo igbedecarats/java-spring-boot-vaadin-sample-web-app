@@ -5,6 +5,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Embeddable
 @AllArgsConstructor
@@ -13,9 +14,11 @@ import lombok.NoArgsConstructor;
 public class Coordinate {
 
   @Column(name = "latitude", nullable = false)
+  @Setter
   private double latitude;
 
   @Column(name = "longitude", nullable = false)
+  @Setter
   private double longitude;
 
 }

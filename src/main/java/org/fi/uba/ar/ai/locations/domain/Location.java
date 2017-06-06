@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -26,13 +27,24 @@ public class Location {
   private long id;
 
   @Column(name = "name", nullable = false, unique = true)
+  @Setter
   private String name;
 
   @Column(name = "area")
   @Enumerated(EnumType.STRING)
+  @Setter
   private LocationArea area;
 
-  private Coordinate coordinate;
+  @Setter
+  private Coordinate coordinate = new Coordinate();
+
+  public double getLatitude() {
+    return coordinate.getLatitude();
+  }
+
+  public double getLongitude() {
+    return coordinate.getLongitude();
+  }
 
   public Location(String name, LocationArea area) {
     this(name, area, new Coordinate());
