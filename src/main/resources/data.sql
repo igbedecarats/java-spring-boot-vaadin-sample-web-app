@@ -20,64 +20,64 @@ INSERT INTO service_sub_category (name, category_id) VALUES ('Tecnología', 3);
 -- Locations
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.7206336', '-58.2546051', 'Quilmes');
+VALUES('GBA_SUR', '-34.7206336', '-58.2546051', 'Quilmes');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.7108688', '-58.2800827', 'Bernal');
+VALUES('GBA_SUR', '-34.7108688', '-58.2800827', 'Bernal');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.748497', '-58.238205', 'Ezpeleta');
+VALUES('GBA_SUR', '-34.748497', '-58.238205', 'Ezpeleta');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.6610756', '-58.3669739', 'Avellaneda');
+VALUES('GBA_SUR', '-34.6610756', '-58.3669739', 'Avellaneda');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.7678337', '-58.3792534', 'Temperley');
+VALUES('GBA_SUR', '-34.7678337', '-58.3792534', 'Temperley');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.7030869', '-58.2974319', 'Don Bosco');
+VALUES('GBA_SUR', '-34.7030869', '-58.2974319', 'Don Bosco');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.695385', '-58.3320999', 'Villa Dominico');
+VALUES('GBA_SUR', '-34.695385', '-58.3320999', 'Villa Dominico');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.6539459', '-58.3489914', 'Dock Sud');
+VALUES('GBA_SUR', '-34.6539459', '-58.3489914', 'Dock Sud');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.425087', '-58.5796585', 'Tigre');
+VALUES('GBA_NORTE', '-34.425087', '-58.5796585', 'Tigre');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-35.0241698', '-58.4237574', 'San Vicente');
+VALUES('GBA_NORTE', '-35.0241698', '-58.4237574', 'San Vicente');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.470829', '-58.5286102', 'San Isidro');
+VALUES('GBA_NORTE', '-34.470829', '-58.5286102', 'San Isidro');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.7611823', '-58.4302476', 'Lomas de Zamora');
+VALUES('GBA_SUR', '-34.7611823', '-58.4302476', 'Lomas de Zamora');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.6994795', '-58.3920795', 'Lanus');
+VALUES('GBA_SUR', '-34.6994795', '-58.3920795', 'Lanus');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.4938049', '-58.6272715', 'Don Torcuato');
+VALUES('GBA_SUR', '-34.4938049', '-58.6272715', 'Don Torcuato');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.6685004', '-58.7282483', 'Merlo');
+VALUES('GBA_OESTE', '-34.6685004', '-58.7282483', 'Merlo');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.6340099', '-58.791382', 'Moreno');
+VALUES('GBA_OESTE', '-34.6340099', '-58.791382', 'Moreno');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.5281205', '-58.473816', 'Vicente Lopez');
+VALUES('GBA_NORTE', '-34.5281205', '-58.473816', 'Vicente Lopez');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.47509', '-58.753746', 'Tortuguitas');
+VALUES('GBA_NORTE', '-34.47509', '-58.753746', 'Tortuguitas');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.7900852', '-58.1548511', 'Hudson');
+VALUES('GBA_SUR', '-34.7900852', '-58.1548511', 'Hudson');
 INSERT INTO location
 (AREA, LATITUDE, LONGITUDE, NAME)
-VALUES(null, '-34.762001', '-58.2112961', 'Berazategui');
+VALUES('GBA_SUR', '-34.762001', '-58.2112961', 'Berazategui');
 
 -- Users
 INSERT INTO user (username, password, email, first_name, last_name, preferred_location_id, role)

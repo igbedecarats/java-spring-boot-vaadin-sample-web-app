@@ -20,7 +20,7 @@ public class UserAdminForm extends FormLayout {
 
   private UserInteractor userInteractor;
   private LocationInteractor locationInteractor;
-  private AdminUsersView formContainer;
+  private UserAdminView formContainer;
   private Binder<User> binder = new Binder<>(User.class);
   private User user;
   private User loggedUser;
@@ -37,7 +37,7 @@ public class UserAdminForm extends FormLayout {
   private Button delete = new Button("Delete");
 
   public UserAdminForm(User loggedUser, UserInteractor userInteractor,
-      LocationInteractor locationInteractor, AdminUsersView formContainer) {
+      LocationInteractor locationInteractor, UserAdminView formContainer) {
     this.loggedUser = loggedUser;
     this.userInteractor = userInteractor;
     this.locationInteractor = locationInteractor;
@@ -77,6 +77,9 @@ public class UserAdminForm extends FormLayout {
       locations.setSelectedItem(location.getName());
     } else {
       locations.setSelectedItem(existingLocations.stream().findFirst().get());
+    }
+    if (user.getRole() == null) {
+      role.setSelectedItem(UserRole.CLIENT);
     }
     // Show delete button for only users already in the database
     delete.setVisible(user.getId() != 0 && isLoggedUserSelectedUser(user));
