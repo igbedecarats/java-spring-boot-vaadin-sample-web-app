@@ -25,7 +25,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     final String username = (String) usernamePasswordAuthenticationToken.getPrincipal();
     final String password = (String) usernamePasswordAuthenticationToken.getCredentials();
     User user = userRepository.findByUsername(username);
-    if (user != null && user.getEncryptedPassword().equals(password)) {
+    if (user != null && user.getPassword().equals(password)) {
       AbstractAuthenticationToken abstractAuthenticationToken = getAbstractAuthenticationToken(
           user);
       abstractAuthenticationToken.setAuthenticated(true);
@@ -38,7 +38,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     return new AbstractAuthenticationToken(Arrays.asList(user.getRole())) {
       @Override
       public Object getCredentials() {
-        return user.getEncryptedPassword();
+        return user.getPassword();
       }
 
       @Override

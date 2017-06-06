@@ -22,7 +22,7 @@ public class LocationController {
 
   @RequestMapping(method = RequestMethod.GET)
   public ResponseEntity<List<Location>> getLocations(@RequestParam final String location) {
-    return ResponseEntity.ok(locationInteractor.find(location));
+    return ResponseEntity.ok(locationInteractor.findWithNameLike(location));
   }
 
   @RequestMapping(value = "/nearby", method = RequestMethod.GET)

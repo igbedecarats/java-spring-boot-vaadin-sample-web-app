@@ -80,6 +80,6 @@ INSERT INTO location
 VALUES(null, '-34.762001', '-58.2112961', 'Berazategui');
 
 -- Users
-INSERT INTO user (username, encrypted_password, email, first_name, last_name, preferred_location_id, role)
+INSERT INTO user (username, password, email, first_name, last_name, preferred_location_id, role)
 VALUES ('johnsmith', 'x28', 'john.smith@gmail.com', 'John', 'Smith', 1, 'ADMIN');
 

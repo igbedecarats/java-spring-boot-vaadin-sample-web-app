@@ -19,10 +19,14 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.HorizontalSplitPanel;
-import javax.annotation.PostConstruct;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
+import java.util.List;
+import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
+import org.fi.uba.ar.ai.locations.usecase.LocationInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
 import org.fi.uba.ar.ai.users.domain.User;
 import org.fi.uba.ar.ai.users.usecase.UserInteractor;
@@ -40,64 +44,64 @@ public class AdminUsersView extends CustomComponent implements View {
 
   private UserInteractor userInteractor;
 
-  private HorizontalSplitPanel splitter = new HorizontalSplitPanel();
-  private Grid<User> grid = new Grid(User.class);
-  UserView editor = new UserView(this::saveUser, this::editSelectedUser, this::deleteUser);
+  private LocationInteractor locationInteractor;
+
+  private Grid<User> grid = new Grid<>(User.class);
+
+  private UserAdminForm form;
 
   @Autowired
-  public AdminUsersView(final UserInteractor userInteractor) {
+  public AdminUsersView(final UserInteractor userInteractor,
+      final LocationInteractor locationInteractor) {
     Validate.notNull(userInteractor, "The User Interactor cannot be null.");
+    Validate.notNull(locationInteractor, "The Location Interactor cannot be null.");
     this.userInteractor = userInteractor;
-    splitter.setSizeFull();
-    grid.setSizeFull();
-    editor.setSizeFull();
+    this.locationInteractor = locationInteractor;
 
-    splitter.setFirstComponent(grid);
-    splitter.setSecondComponent(editor);
+    User loggedUser = SpringContextUserHolder.getUser();
+    form = new UserAdminForm(loggedUser, userInteractor, locationInteractor, this);
 
-    setCompositionRoot(splitter);
-  }
+    final VerticalLayout layout = new VerticalLayout();
 
-  @PostConstruct
-  public void init() {
-    grid.asSingleSelect().addValueChangeListener(evt -> {
-      editSelectedUser();
+    Button addUserBtn = new Button("Add new customer");
+    addUserBtn.addClickListener(e -> {
+      grid.asSingleSelect().clear();
+      form.setUser(new User());
     });
-    listUsers();
-    grid.setColumns("firstName","lastName","email");
-    selectDefault();
+
+    HorizontalLayout toolbar = new HorizontalLayout(addUserBtn);
+
+    grid.setColumns("id", "username", "firstName", "lastName", "email");
+
+    HorizontalLayout main = new HorizontalLayout(grid, form);
+    main.setSizeFull();
+    grid.setSizeFull();
+    main.setExpandRatio(grid, 1);
+
+    layout.addComponents(toolbar, main);
+
+    updateList();
+
+    setCompositionRoot(layout);
+
+    form.setVisible(false);
+
+    grid.asSingleSelect().addValueChangeListener(event -> {
+      if (event.getValue() == null) {
+        form.setVisible(false);
+      } else {
+        form.setUser(event.getValue());
+      }
+    });
   }
 
-  private void saveUser(User person) {
-    User newUser = userInteractor.save(person);
-    listUsers();
-    grid.select(newUser);
-  }
-
-  private void deleteUser(User person) {
-    userInteractor.delete(person);
-    listUsers();
-    selectDefault();
-  }
-
-  private void editSelectedUser() {
-    User selected = grid.asSingleSelect().getValue();
-    if(selected != null) {
-      editor.setUser(userInteractor.find(selected.getId()));
-    }else {
-      selectDefault();
-    }
-  }
-
-  private void selectDefault() {
-    grid.select(userInteractor.findAll().stream().findFirst().get());
-  }
-
-  private void listUsers() {
-    grid.setItems(userInteractor.findAll());
-  }
 
   @Override
   public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
+  }
+
+  public void updateList() {
+    List<User> users = userInteractor.findAll();
+    grid.setItems(users);
   }
 }

@@ -20,7 +20,15 @@ public class LocationInteractor {
 
   private GeoApiContext geoApiContext;
 
-  public List<Location> find(final String locationName) {
+  public List<Location> findAll() {
+    return repository.findAll();
+  }
+
+  public Location findByName(final String locationName) {
+    return repository.findByName(locationName);
+  }
+
+  public List<Location> findWithNameLike(final String locationName) {
     return repository.findByNameIgnoreCaseContaining(locationName);
   }
 
@@ -55,7 +63,6 @@ public class LocationInteractor {
       throw new IllegalArgumentException("Unable to process Locations", e);
     }
   }
-
 
   public List<Location> findNearBy(String locationName) {
     Location location = repository.findByNameIgnoreCase(locationName);
