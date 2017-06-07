@@ -8,6 +8,7 @@ import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
+import org.fi.uba.ar.ai.ui.events.GoToSignUp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.vaadin.spring.events.EventBus;
@@ -63,6 +64,10 @@ public class ServiceYaUI extends UI {
     super.detach();
   }
 
+  private void showSignUpScreen() {
+    setContent(applicationContext.getBean(SignUpScreen.class));
+  }
+
   private void showLoginScreen(boolean loggedOut) {
     LoginScreen loginScreen = applicationContext.getBean(LoginScreen.class);
     loginScreen.setLoggedOut(loggedOut);
@@ -77,6 +82,18 @@ public class ServiceYaUI extends UI {
   void onLogin(SuccessfulLoginEvent loginEvent) {
     if (loginEvent.getSource().equals(this)) {
       access(() -> showMainScreen());
+    } else {
+      // We cannot inject the Main Screen if the event was fired from another UI, since that UI's scope would be active
+      // and the main screen for that UI would be injected. Instead, we just reload the page and let the init(...) method
+      // do the work for us.
+      getPage().reload();
+    }
+  }
+
+  @EventBusListenerMethod
+  void onGoToSignUp(GoToSignUp goToSignUpEvent) {
+    if (goToSignUpEvent.getSource().equals(this)) {
+      access(() -> showSignUpScreen());
     } else {
       // We cannot inject the Main Screen if the event was fired from another UI, since that UI's scope would be active
       // and the main screen for that UI would be injected. Instead, we just reload the page and let the init(...) method

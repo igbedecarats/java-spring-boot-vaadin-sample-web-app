@@ -13,6 +13,7 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import org.fi.uba.ar.ai.ui.events.GoToSignUp;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -35,6 +36,8 @@ public class LoginScreen extends CustomComponent {
 
   private Button login;
 
+  private Button signUp;
+
   private Label loginFailedLabel;
 
   private Label loggedOutLabel;
@@ -56,13 +59,18 @@ public class LoginScreen extends CustomComponent {
     userName = new TextField("Username");
     passwordField = new PasswordField("Password");
     login = new Button("Login");
+    signUp = new Button("Sign Up");
     loginForm.addComponent(userName);
     loginForm.addComponent(passwordField);
     loginForm.addComponent(login);
+    loginForm.addComponent(signUp);
     login.addStyleName(ValoTheme.BUTTON_PRIMARY);
     login.setDisableOnClick(true);
     login.setClickShortcut(ShortcutAction.KeyCode.ENTER);
     login.addClickListener((ClickListener) event -> login());
+    signUp.addStyleName(ValoTheme.BUTTON_LINK);
+    signUp.setDisableOnClick(true);
+    signUp.addClickListener((ClickListener) event -> signUp());
 
     VerticalLayout loginLayout = new VerticalLayout();
     loginLayout.setSizeUndefined();
@@ -89,6 +97,10 @@ public class LoginScreen extends CustomComponent {
     rootLayout.setComponentAlignment(loginLayout, Alignment.MIDDLE_CENTER);
     setCompositionRoot(rootLayout);
     setSizeFull();
+  }
+
+  private void signUp() {
+    eventBus.publish(this, new GoToSignUp(getUI()));
   }
 
   private void login() {
