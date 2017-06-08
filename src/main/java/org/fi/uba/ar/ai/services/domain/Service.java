@@ -6,7 +6,10 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,6 +40,7 @@ public class Service {
   private long id;
 
   @Column(name = "name", nullable = false)
+  @Setter
   private String name;
 
   @Column(name = "description", nullable = false)
@@ -55,6 +59,7 @@ public class Service {
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "provider_id")
+  @Setter
   private User provider;
 
   @ManyToOne(optional = false)
@@ -63,15 +68,19 @@ public class Service {
   private Location location;
 
   @Column(name = "start_time")
+  @Setter
   private String startTime;
 
   @Column(name = "end_time")
+  @Setter
   private String endTime;
 
   @Column(name = "start_day")
+  @Setter
   private Integer startDay;
 
   @Column(name = "end_day")
+  @Setter
   private Integer endDay;
 
   public Service(String name, String description,
@@ -124,16 +133,38 @@ public class Service {
   }
 
   public String getLocalizedStartDay() {
-    return getLocalizedDayOfTheWeek(startDay);
+    return startDay != null ? getLocalizedDayOfTheWeek(startDay) : null;
   }
 
   public String getLocalizedEndDay() {
-    return getLocalizedDayOfTheWeek(endDay);
+    return endDay != null ? getLocalizedDayOfTheWeek(endDay) : null;
+  }
+
+  public void setLocalizedStartDay(final String day) {
+    this.startDay = getDayOfTheWeekFromLocalizedDay(day);
+  }
+
+  public void setLocalizedEndDay(final String day) {
+    this.endDay = getDayOfTheWeekFromLocalizedDay(day);
+  }
+
+  private int getDayOfTheWeekFromLocalizedDay(String day) {
+    return Arrays.stream(DayOfWeek.values()).filter(dayOfWeek ->
+        StringUtils.capitalize(DayOfWeek.of(dayOfWeek.getValue())
+            .getDisplayName(TextStyle.FULL, Locale.forLanguageTag("es"))).equals(day)).findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Invalid Day of the Week")).getValue();
   }
 
   private String getLocalizedDayOfTheWeek(final Integer dayOfTheWeek) {
     return StringUtils.capitalize(
         DayOfWeek.of(dayOfTheWeek).getDisplayName(TextStyle.FULL, Locale.forLanguageTag("es")));
+  }
+
+  public static List<String> getLocalizedDaysOfTheWeek() {
+    return Arrays.stream(DayOfWeek.values())
+        .map(dayOfWeek -> StringUtils.capitalize(DayOfWeek.of(dayOfWeek.getValue())
+            .getDisplayName(TextStyle.FULL, Locale.forLanguageTag("es"))))
+        .collect(Collectors.toList());
   }
 
   private void validateDaysRange(final Integer startDay, final Integer endDay) {

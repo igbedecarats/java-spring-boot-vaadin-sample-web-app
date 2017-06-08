@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui;
+package org.fi.uba.ar.ai.ui.screens;
 
 import com.vaadin.navigator.Navigator;
 import com.vaadin.spring.annotation.SpringComponent;
@@ -8,8 +8,8 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
-import org.fi.uba.ar.ai.ui.views.AccessDeniedView;
-import org.fi.uba.ar.ai.ui.views.ErrorView;
+import org.fi.uba.ar.ai.ui.views.global.AccessDeniedView;
+import org.fi.uba.ar.ai.ui.views.global.ErrorView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.security.VaadinSecurity;
 import org.vaadin.spring.sidebar.components.ValoSideBar;

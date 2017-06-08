@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui.views;
+package org.fi.uba.ar.ai.ui.views.admin;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -10,9 +10,11 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 import java.util.List;
-import org.fi.uba.ar.ai.locations.domain.Location;
+import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
 import org.fi.uba.ar.ai.locations.usecase.LocationInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
+import org.fi.uba.ar.ai.users.domain.User;
+import org.fi.uba.ar.ai.users.usecase.UserInteractor;
 import org.jsoup.helper.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -20,38 +22,41 @@ import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @Secured("ROLE_ADMIN")
-@SpringView(name = "locations")
-@SideBarItem(sectionId = Sections.ADMIN, caption = "Locations")
+@SpringView(name = "users")
+@SideBarItem(sectionId = Sections.ADMIN, caption = "Users")
 @FontAwesomeIcon(FontAwesome.COGS)
-public class LocationAdminView extends CustomComponent implements View {
+public class UserAdminView extends CustomComponent implements View {
+
+  private UserInteractor userInteractor;
 
   private LocationInteractor locationInteractor;
 
-  private Grid<Location> grid = new Grid<>();
+  private Grid<User> grid = new Grid<>(User.class);
 
-  private LocationAdminForm form;
+  private UserAdminForm form;
 
   @Autowired
-  public LocationAdminView(final LocationInteractor locationInteractor) {
+  public UserAdminView(final UserInteractor userInteractor,
+      final LocationInteractor locationInteractor) {
+    Validate.notNull(userInteractor, "The User Interactor cannot be null.");
     Validate.notNull(locationInteractor, "The Location Interactor cannot be null.");
+    this.userInteractor = userInteractor;
     this.locationInteractor = locationInteractor;
-    form = new LocationAdminForm(locationInteractor, this);
+
+    User loggedUser = SpringContextUserHolder.getUser();
+    form = new UserAdminForm(loggedUser, this.userInteractor, this.locationInteractor, this);
 
     final VerticalLayout layout = new VerticalLayout();
 
-    Button addLocationBtn = new Button("Add new location");
-    addLocationBtn.addClickListener(e -> {
+    Button addUserBtn = new Button("Add new customer");
+    addUserBtn.addClickListener(e -> {
       grid.asSingleSelect().clear();
-      form.setLocation(new Location());
+      form.setUser(new User());
     });
 
-    HorizontalLayout toolbar = new HorizontalLayout(addLocationBtn);
+    HorizontalLayout toolbar = new HorizontalLayout(addUserBtn);
 
-    grid.addColumn(Location::getId).setCaption("Id");
-    grid.addColumn(Location::getName).setCaption("Name");
-    grid.addColumn(Location::getArea).setCaption("Area");
-    grid.addColumn(Location::getLatitude).setCaption("Latitude");
-    grid.addColumn(Location::getLongitude).setCaption("Longitude");
+    grid.setColumns("id", "username", "firstName", "lastName", "email");
 
     HorizontalLayout main = new HorizontalLayout(grid, form);
     main.setSizeFull();
@@ -70,7 +75,7 @@ public class LocationAdminView extends CustomComponent implements View {
       if (event.getValue() == null) {
         form.setVisible(false);
       } else {
-        form.setLocation(event.getValue());
+        form.setUser(event.getValue());
       }
     });
   }
@@ -80,7 +85,7 @@ public class LocationAdminView extends CustomComponent implements View {
   }
 
   public void updateList() {
-    List<Location> locations = locationInteractor.findAll();
-    grid.setItems(locations);
+    List<User> users = userInteractor.findAll();
+    grid.setItems(users);
   }
 }

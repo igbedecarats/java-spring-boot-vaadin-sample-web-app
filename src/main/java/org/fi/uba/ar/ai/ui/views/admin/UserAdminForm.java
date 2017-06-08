@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui.views;
+package org.fi.uba.ar.ai.ui.views.admin;
 
 import com.vaadin.data.Binder;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -51,9 +51,7 @@ public class UserAdminForm extends FormLayout {
     existingLocations = this.locationInteractor.findAll().stream()
         .map(location -> location.getName()).collect(
             Collectors.toList());
-    locations
-        .setItems(
-            existingLocations);
+    locations.setItems(existingLocations);
     locations.setSelectedItem(existingLocations.stream().findFirst().get());
     locations.setEmptySelectionAllowed(false);
     save.setStyleName(ValoTheme.BUTTON_PRIMARY);

@@ -88,6 +88,11 @@
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-client-compiled</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-icons</artifactId>
+      <version>3.0.1</version>
+    </dependency>
 
     <!-- Swagger -->
     <dependency>

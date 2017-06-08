@@ -10,4 +10,5 @@ public interface ServiceSubCategoryRepository extends CrudRepository<ServiceSubC
 
   Optional<ServiceSubCategory> findOne(final long id);
 
+  ServiceSubCategory findByName(final String subCategoryName);
 }

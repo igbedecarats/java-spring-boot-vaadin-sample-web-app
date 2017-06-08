@@ -7,4 +7,5 @@ public interface ServiceCategoryRepository extends CrudRepository<ServiceCategor
 
   Optional<ServiceCategory> findOne(final long id);
 
+  ServiceCategory findByName(String serviceName);
 }

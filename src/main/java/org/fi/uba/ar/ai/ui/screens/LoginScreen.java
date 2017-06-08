@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui;
+package org.fi.uba.ar.ai.ui.screens;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.spring.annotation.SpringComponent;
@@ -49,7 +49,7 @@ public class LoginScreen extends CustomComponent {
     initLayout();
   }
 
-  void setLoggedOut(boolean loggedOut) {
+  public void setLoggedOut(boolean loggedOut) {
     loggedOutLabel.setVisible(loggedOut);
   }
 

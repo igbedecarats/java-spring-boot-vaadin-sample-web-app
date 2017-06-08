@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui.views;
+package org.fi.uba.ar.ai.ui.views.global;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;

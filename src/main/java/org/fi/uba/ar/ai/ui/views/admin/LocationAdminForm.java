@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui.views;
+package org.fi.uba.ar.ai.ui.views.admin;
 
 import com.vaadin.data.Binder;
 import com.vaadin.event.ShortcutAction.KeyCode;

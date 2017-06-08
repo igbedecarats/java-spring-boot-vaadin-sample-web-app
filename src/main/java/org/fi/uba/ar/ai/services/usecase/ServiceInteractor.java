@@ -1,6 +1,7 @@
 package org.fi.uba.ar.ai.services.usecase;
 
 import com.google.common.collect.Sets;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.Validate;
@@ -74,6 +75,35 @@ public class ServiceInteractor {
 
   public ServiceCategory getServiceCategory(long categoryId) {
     return serviceCategoryRepository.findOne(categoryId).orElseThrow(
-        () -> new EntityNotFoundException("The category with id " + categoryId + " doesn't exist."));
+        () -> new EntityNotFoundException(
+            "The category with id " + categoryId + " doesn't exist."));
+  }
+
+  public void delete(Service service) {
+    serviceRepository.delete(service);
+  }
+
+  public List<Service> findAll() {
+    return (List<Service>) serviceRepository.findAll();
+  }
+
+  public List<Service> findWithNameLike(String name) {
+    return serviceRepository.findByNameIgnoreCaseContaining(name);
+  }
+
+  public List<ServiceCategory> findAllCategories() {
+    return (List<ServiceCategory>) serviceCategoryRepository.findAll();
+  }
+
+  public ServiceCategory findCategoryByName(String categoryName) {
+    return serviceCategoryRepository.findByName(categoryName);
+  }
+
+  public ServiceSubCategory findSubCategoryByName(String subCategoryName) {
+    return serviceSubCategoryRepository.findByName(subCategoryName);
+  }
+
+  public Service save(Service service) {
+    return serviceRepository.save(service);
   }
 }

@@ -32,7 +32,7 @@ public class ServiceCategory {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "category")
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "category")
   private Set<ServiceSubCategory> subCategories = new LinkedHashSet<>();
 
   public ServiceCategory(final String name) {

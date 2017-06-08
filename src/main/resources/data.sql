@@ -83,3 +83,7 @@ VALUES('GBA_SUR', '-34.762001', '-58.2112961', 'Berazategui');
 INSERT INTO user (username, password, email, first_name, last_name, preferred_location_id, role)
 VALUES ('johnsmith', 'x28', 'john.smith@gmail.com', 'John', 'Smith', 1, 'ADMIN');
 
+INSERT INTO user (username, password, email, first_name, last_name, preferred_location_id, role)
+VALUES ('johnsnow', 'js', 'john.snow@gmail.com', 'John', 'Snow', 2, 'PROVIDER');
+
+

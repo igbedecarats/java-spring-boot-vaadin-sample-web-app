@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui;
+package org.fi.uba.ar.ai.ui.screens;
 
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.spring.annotation.SpringComponent;
