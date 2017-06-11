@@ -13,6 +13,7 @@ import java.util.List;
 import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
 import org.fi.uba.ar.ai.locations.usecase.LocationInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
+import org.fi.uba.ar.ai.ui.views.global.UserForm;
 import org.fi.uba.ar.ai.users.domain.User;
 import org.fi.uba.ar.ai.users.usecase.UserInteractor;
 import org.jsoup.helper.Validate;

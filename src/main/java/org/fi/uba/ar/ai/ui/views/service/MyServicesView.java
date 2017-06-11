@@ -78,6 +78,8 @@ public class MyServicesView extends CustomComponent implements View {
     form.setVisible(false);
     HorizontalLayout servicesLayout = new HorizontalLayout(panel, form);
     servicesLayout.setSizeFull();
+    servicesLayout.setMargin(true);
+    servicesLayout.setSpacing(true);
     rootContainer.addComponent(servicesLayout);
     rootContainer.setComponentAlignment(servicesLayout, Alignment.MIDDLE_CENTER);
     setCompositionRoot(rootContainer);
@@ -98,9 +100,9 @@ public class MyServicesView extends CustomComponent implements View {
 
   private void populateList(List<Service> services) {
     services.stream().forEach(service -> {
-      ServiceComponent serviceComponent = new ServiceComponent(service, serviceInteractor, form, this);
-      servicesContainer.addComponent(serviceComponent);
-      servicesContainer.setComponentAlignment(serviceComponent, Alignment.TOP_CENTER);
+      MyServiceComponent myServiceComponent = new MyServiceComponent(service, serviceInteractor, form, this);
+      servicesContainer.addComponent(myServiceComponent);
+      servicesContainer.setComponentAlignment(myServiceComponent, Alignment.TOP_CENTER);
     });
   }
 
