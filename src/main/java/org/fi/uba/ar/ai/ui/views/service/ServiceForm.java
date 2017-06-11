@@ -3,12 +3,10 @@ package org.fi.uba.ar.ai.ui.views.service;
 import com.vaadin.data.Binder;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.List;
@@ -20,15 +18,14 @@ import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.users.domain.User;
 import org.slf4j.LoggerFactory;
 
-public class ServicePopUpContent implements PopupView.Content {
+public class ServiceForm extends FormLayout {
 
   private User loggedUser;
   private Service service;
   private ServiceInteractor serviceInteractor;
   private LocationInteractor locationInteractor;
-  private MyServicesView popUpContainer;
+  private MyServicesView componentContainer;
 
-  private FormLayout formLayout = new FormLayout();
   private Binder<Service> binder = new Binder<>(Service.class);
 
   private TextField name = new TextField("Name");
@@ -44,17 +41,18 @@ public class ServicePopUpContent implements PopupView.Content {
   private List<String> daysOfTheWeek = Service.getLocalizedDaysOfTheWeek();
   private NativeSelect<String> startDays = new NativeSelect<>("Start Day");
   private NativeSelect<String> endDays = new NativeSelect<>("End Day");
+  private Button cancel = new Button("Cancel");
   private Button save = new Button("Save");
 
-  public ServicePopUpContent(User loggedUser,
+  public ServiceForm(User loggedUser,
       ServiceInteractor serviceInteractor,
       LocationInteractor locationInteractor,
-      MyServicesView popUpContainer) {
+      MyServicesView componentContainer) {
     this.loggedUser = loggedUser;
     this.service = new Service();
     this.serviceInteractor = serviceInteractor;
     this.locationInteractor = locationInteractor;
-    this.popUpContainer = popUpContainer;
+    this.componentContainer = componentContainer;
 
     binder.bindInstanceFields(this);
 
@@ -91,13 +89,15 @@ public class ServicePopUpContent implements PopupView.Content {
     save.setStyleName(ValoTheme.BUTTON_PRIMARY);
     save.setClickShortcut(KeyCode.ENTER);
     save.addClickListener(e -> this.save());
-    buttonsContainer.addComponents(save);
+    cancel.setStyleName(ValoTheme.BUTTON_QUIET);
+    cancel.setClickShortcut(KeyCode.ESCAPE);
+    cancel.addClickListener(e -> this.setVisible(false));
+    buttonsContainer.addComponents(cancel, save);
 
-    formLayout
-        .addComponents(name, description, categoriesContainer, locations, timesContainer,
-            daysContainer, buttonsContainer);
+    this.addComponents(name, description, categoriesContainer, locations, timesContainer,
+        daysContainer, buttonsContainer);
 
-    formLayout.setSizeUndefined();
+    this.setSizeUndefined();
   }
 
   private void updateCategories() {
@@ -144,23 +144,14 @@ public class ServicePopUpContent implements PopupView.Content {
         service.setLocalizedEndDay(endDays.getSelectedItem().get());
       }
       serviceInteractor.save(service);
-      popUpContainer.closePopUp();
+      this.setVisible(false);
+      componentContainer.updateList();
     } catch (Exception ex) {
       Notification
           .show("An unexpected error occurred: ", ex.getMessage(), Notification.Type.ERROR_MESSAGE);
       LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
     }
 
-  }
-
-  @Override
-  public String getMinimizedValueAsHTML() {
-    return null;
-  }
-
-  @Override
-  public Component getPopupComponent() {
-    return formLayout;
   }
 
   public void setService(Service service) {

@@ -5,10 +5,8 @@ import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.fi.uba.ar.ai.services.domain.Service;
@@ -16,82 +14,67 @@ import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 
 public class ServiceComponent extends VerticalLayout {
 
-  private TextField name = new TextField("Name");
-  private Label description;
-  private TextField category = new TextField("Category");
-  private TextField subCategory = new TextField("Sub Category");
-  private TextField locationName = new TextField("Location");
-  private TextField locationArea = new TextField("Area");
-  private TextField startTime = new TextField("Start Time");
-  private TextField endTime = new TextField("End Time");
-  private TextField startDay = new TextField("Start Day");
-  private TextField endDay = new TextField("End Day");
+  private Label name = new Label();
+  private Label description = new Label();
+  private Label category = new Label();
+  private Label subCategory = new Label();
+  private Label locationName = new Label();
+  private Label locationArea = new Label();
+  private Label times = new Label();
+  private Label days = new Label();
   private Button edit = new Button();
   private Button delete = new Button();
 
   private Service service;
   private ServiceInteractor serviceInteractor;
-  private PopupView popUp;
-  private ServicePopUpContent popUpContent;
+  private ServiceForm form;
   private MyServicesView componentContainer;
 
   public ServiceComponent(final Service service, final ServiceInteractor serviceInteractor,
-      PopupView popUp,
-      ServicePopUpContent popUpContent,
-      final MyServicesView componentContainer) {
+      final ServiceForm form, final MyServicesView componentContainer) {
     Validate.notNull(service, "The Service cannot be null.");
     Validate.notNull(serviceInteractor, "The Service Interactor cannot be null.");
-    Validate.notNull(popUp, "The popUp cannot be null.");
-    Validate.notNull(popUpContent, "The popUpContent cannot be null.");
+    Validate.notNull(form, "The form cannot be null.");
     Validate.notNull(componentContainer, "The Component Container cannot be null.");
 
-    this.popUp = popUp;
-    this.popUpContent = popUpContent;
+    this.form = form;
     this.service = service;
     this.serviceInteractor = serviceInteractor;
     this.componentContainer = componentContainer;
 
-    name.setEnabled(false);
+    name.setCaption("<h2> Servicio </h2> ");
+    name.setCaptionAsHtml(true);
     name.setValue(service.getName());
+    name.setContentMode(ContentMode.TEXT);
+    name.setStyleName(ValoTheme.LABEL_H3);
 
-    VerticalLayout descriptionContainer = new VerticalLayout();
-    Panel descriptionPanel = new Panel("Description");
-    descriptionPanel.setHeight(100.0f, Unit.PERCENTAGE);
-    descriptionContainer.setWidth(500, Unit.PIXELS);
-    descriptionContainer.setSpacing(false);
-    description = new Label(service.getDescription(), ContentMode.HTML);
-    descriptionContainer.addComponent(description);
-    descriptionPanel.setContent(descriptionContainer);
+    description.setCaption("<h2> Descripción </h2>");
+    description.setCaptionAsHtml(true);
+    description.setValue(service.getDescription());
 
+    HorizontalLayout categoriesAndLocationContainer = new HorizontalLayout();
     HorizontalLayout categoriesContainer = new HorizontalLayout();
-    category.setEnabled(false);
+    categoriesContainer.setCaption("<h2> Categoría </h2>");
+    categoriesContainer.setCaptionAsHtml(true);
     category.setValue(service.getCategory().getName());
-    subCategory.setEnabled(false);
     String subCategoryName = service.getSubCategory().getName();
     subCategory
         .setValue(StringUtils.isNotBlank(subCategoryName) ? subCategoryName : StringUtils.EMPTY);
     categoriesContainer.addComponents(category, subCategory);
-
     HorizontalLayout locationsContainer = new HorizontalLayout();
-    locationName.setEnabled(false);
-    locationName.setValue(service.getLocation().getName());
-    locationArea.setEnabled(false);
+    locationsContainer.setCaption("<h2> Ubicación </h2>");
+    locationsContainer.setCaptionAsHtml(true);
     locationArea.setValue(service.getLocation().getArea().name());
-    locationsContainer.addComponents(locationName, locationArea);
+    locationName.setValue(service.getLocation().getName());
+    locationsContainer.addComponents(locationArea, locationName);
+    categoriesAndLocationContainer.addComponents(categoriesContainer, locationsContainer);
 
-    HorizontalLayout timesContainer = new HorizontalLayout();
-    startTime.setEnabled(false);
-    startTime.setValue(service.getStartTime());
-    endTime.setEnabled(false);
-    endTime.setValue(service.getEndTime());
-    timesContainer.addComponents(startTime, endTime);
-
-    HorizontalLayout daysContainer = new HorizontalLayout();
-    startDay.setEnabled(false);
-    startDay.setValue(service.getLocalizedStartDay());
-    endDay.setEnabled(false);
-    endDay.setValue(service.getLocalizedEndDay());
-    daysContainer.addComponents(startDay, endDay);
+    HorizontalLayout dayTimeContainer = new HorizontalLayout();
+    dayTimeContainer.setCaption("<h2> Días y Horarios de Atención </h2>");
+    dayTimeContainer.setCaptionAsHtml(true);
+    days.setValue(service.getLocalizedStartDay() + " a " + service.getLocalizedEndDay());
+    times.setValue(service.getStartTime() + " a " + service.getEndTime());
+    dayTimeContainer.addComponents(days, times);
 
     HorizontalLayout buttonsContainer = new HorizontalLayout();
     edit.setIcon(VaadinIcons.EDIT);
@@ -100,8 +83,8 @@ public class ServiceComponent extends VerticalLayout {
     delete.addClickListener(e -> this.delete());
     buttonsContainer.addComponents(edit, delete);
 
-    addComponents(name, description, categoriesContainer, locationsContainer, timesContainer,
-        daysContainer, buttonsContainer);
+    addComponents(name, description, categoriesAndLocationContainer, dayTimeContainer,
+        buttonsContainer);
 
     setSizeUndefined();
   }
@@ -112,8 +95,8 @@ public class ServiceComponent extends VerticalLayout {
   }
 
   private void edit() {
-    popUpContent.setService(service);
-    popUp.setPopupVisible(true);
+    form.setService(service);
+    form.setVisible(true);
   }
 
 }

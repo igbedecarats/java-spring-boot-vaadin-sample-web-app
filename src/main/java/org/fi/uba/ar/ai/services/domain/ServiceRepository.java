@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface ServiceRepository extends CrudRepository<Service, Long> {
 
-  List<Service> findByNameIgnoreCaseContaining(final String name);
+  List<Service> findByProviderIdAndNameIgnoreCaseContaining(final long id, final String name);
 
+  List<Service> findByProviderId(long id);
 }

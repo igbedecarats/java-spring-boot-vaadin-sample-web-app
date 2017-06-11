@@ -83,12 +83,12 @@ public class ServiceInteractor {
     serviceRepository.delete(service);
   }
 
-  public List<Service> findAll() {
-    return (List<Service>) serviceRepository.findAll();
+  public List<Service> findAll(long id) {
+    return serviceRepository.findByProviderId(id);
   }
 
-  public List<Service> findWithNameLike(String name) {
-    return serviceRepository.findByNameIgnoreCaseContaining(name);
+  public List<Service> findAll(long id, String name) {
+    return serviceRepository.findByProviderIdAndNameIgnoreCaseContaining(id, name);
   }
 
   public List<ServiceCategory> findAllCategories() {
@@ -97,10 +97,6 @@ public class ServiceInteractor {
 
   public ServiceCategory findCategoryByName(String categoryName) {
     return serviceCategoryRepository.findByName(categoryName);
-  }
-
-  public ServiceSubCategory findSubCategoryByName(String subCategoryName) {
-    return serviceSubCategoryRepository.findByName(subCategoryName);
   }
 
   public Service save(Service service) {

@@ -9,7 +9,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import java.util.List;
@@ -19,7 +18,6 @@ import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
 import org.fi.uba.ar.ai.users.domain.User;
-import org.fi.uba.ar.ai.users.usecase.UserInteractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
@@ -33,8 +31,6 @@ public class MyServicesView extends CustomComponent implements View {
 
   private User loggedUser;
 
-  private UserInteractor userInteractor;
-
   private LocationInteractor locationInteractor;
 
   private ServiceInteractor serviceInteractor;
@@ -43,17 +39,14 @@ public class MyServicesView extends CustomComponent implements View {
 
   private HorizontalLayout searchContainer;
 
+  private ServiceForm form;
+
   private VerticalLayout servicesContainer;
 
-  private PopupView popUp;
-
-  private ServicePopUpContent popUpContent;
 
   @Autowired
-  public MyServicesView(UserInteractor userInteractor,
-      LocationInteractor locationInteractor,
+  public MyServicesView(LocationInteractor locationInteractor,
       ServiceInteractor serviceInteractor) {
-    this.userInteractor = userInteractor;
     this.locationInteractor = locationInteractor;
     this.serviceInteractor = serviceInteractor;
 
@@ -77,45 +70,38 @@ public class MyServicesView extends CustomComponent implements View {
     servicesContainer.setSizeUndefined();
     Panel panel = new Panel("My Services");
     panel.setContent(servicesContainer);
-    panel.setWidth("1000px");
+    panel.setWidth("500px");
     panel.setHeight("550px");
-    rootContainer.addComponent(panel);
-
     loggedUser = SpringContextUserHolder.getUser();
-
-    popUpContent = new ServicePopUpContent(loggedUser, this.serviceInteractor, this.locationInteractor, this);
-    popUp = new PopupView(popUpContent);
-    popUp.setHideOnMouseOut(false);
-    rootContainer.addComponent(popUp);
+    form = new ServiceForm(loggedUser, this.serviceInteractor, this.locationInteractor, this);
+    form.setVisible(false);
+    HorizontalLayout servicesLayout = new HorizontalLayout(panel, form);
+    servicesLayout.setSizeFull();
+    rootContainer.addComponent(servicesLayout);
 
     updateList();
   }
 
   private void add() {
-    popUpContent.setService(new Service());
-    popUp.setPopupVisible(true);
+    form.setService(new Service());
+    form.setVisible(true);
   }
 
   private void search(String serviceName) {
     servicesContainer.removeAllComponents();
-    List<Service> services = serviceInteractor.findWithNameLike(serviceName);
+    List<Service> services = serviceInteractor.findAll(loggedUser.getId(), serviceName);
     populateList(services);
   }
 
   private void populateList(List<Service> services) {
     services.stream().forEach(service -> servicesContainer
-        .addComponent(new ServiceComponent(service, serviceInteractor, popUp, popUpContent, this)));
+        .addComponent(new ServiceComponent(service, serviceInteractor, form, this)));
   }
 
   public void updateList() {
     servicesContainer.removeAllComponents();
-    List<Service> services = serviceInteractor.findAll();
+    List<Service> services = serviceInteractor.findAll(loggedUser.getId());
     populateList(services);
-  }
-
-  public void closePopUp() {
-    popUp.setPopupVisible(false);
-    updateList();
   }
 
   @Override
