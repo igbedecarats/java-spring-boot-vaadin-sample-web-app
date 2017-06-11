@@ -102,4 +102,8 @@ public class ServiceInteractor {
   public Service save(Service service) {
     return serviceRepository.save(service);
   }
+
+  public List<Service> findAll(String value) {
+    return serviceRepository.findByNameIgnoreCaseContaining(value);
+  }
 }

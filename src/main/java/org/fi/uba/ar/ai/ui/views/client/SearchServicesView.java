@@ -7,12 +7,13 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Grid;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import java.util.List;
 import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
-import org.fi.uba.ar.ai.locations.domain.Location;
 import org.fi.uba.ar.ai.locations.usecase.LocationInteractor;
+import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
 import org.fi.uba.ar.ai.users.domain.User;
@@ -31,7 +32,7 @@ public class SearchServicesView extends CustomComponent implements View {
 
   private ServiceInteractor serviceInteractor;
 
-  private Grid<Location> grid = new Grid<>();
+  private VerticalLayout servicesContainer = new VerticalLayout();
 
   @Autowired
   public SearchServicesView(LocationInteractor locationInteractor,
@@ -52,11 +53,21 @@ public class SearchServicesView extends CustomComponent implements View {
     rootLayout.addComponent(searchLayout);
     rootLayout.setSizeFull();
     rootLayout.setComponentAlignment(searchLayout, Alignment.TOP_CENTER);
+    Panel panel = new Panel("Services");
+    panel.setContent(servicesContainer);
+    panel.setSizeFull();
+    servicesContainer.setSizeUndefined();
+    rootLayout.addComponent(panel);
     setCompositionRoot(rootLayout);
     setSizeFull();
+    simpleSearch("");
   }
 
   private void simpleSearch(String value) {
+    List<Service> services = serviceInteractor.findAll(value);
+    servicesContainer.removeAllComponents();
+    services.stream()
+        .forEach(service -> servicesContainer.addComponent(new ServiceComponent(service)));
   }
 
   @Override
