@@ -5,6 +5,8 @@ import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import org.apache.commons.lang3.StringUtils;
@@ -92,6 +94,8 @@ public class ServiceComponent extends VerticalLayout {
   private void delete() {
     serviceInteractor.delete(service);
     componentContainer.updateList();
+    Notification
+        .show("Success!", Type.HUMANIZED_MESSAGE);
   }
 
   private void edit() {

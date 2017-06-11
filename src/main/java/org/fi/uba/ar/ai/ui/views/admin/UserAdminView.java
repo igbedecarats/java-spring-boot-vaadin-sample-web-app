@@ -33,7 +33,7 @@ public class UserAdminView extends CustomComponent implements View {
 
   private Grid<User> grid = new Grid<>(User.class);
 
-  private UserAdminForm form;
+  private UserForm form;
 
   @Autowired
   public UserAdminView(final UserInteractor userInteractor,
@@ -44,7 +44,8 @@ public class UserAdminView extends CustomComponent implements View {
     this.locationInteractor = locationInteractor;
 
     User loggedUser = SpringContextUserHolder.getUser();
-    form = new UserAdminForm(loggedUser, this.userInteractor, this.locationInteractor, this);
+    form = new UserForm(loggedUser, this.userInteractor, this.locationInteractor,
+        () -> updateList());
 
     final VerticalLayout layout = new VerticalLayout();
 

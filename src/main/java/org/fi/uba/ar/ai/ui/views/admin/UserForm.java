@@ -6,8 +6,11 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.fi.uba.ar.ai.locations.domain.Location;
@@ -16,11 +19,11 @@ import org.fi.uba.ar.ai.users.domain.User;
 import org.fi.uba.ar.ai.users.domain.UserRole;
 import org.fi.uba.ar.ai.users.usecase.UserInteractor;
 
-public class UserAdminForm extends FormLayout {
+public class UserForm extends FormLayout {
 
   private UserInteractor userInteractor;
   private LocationInteractor locationInteractor;
-  private UserAdminView formContainer;
+  private Runnable function;
   private Binder<User> binder = new Binder<>(User.class);
   private User user;
   private User loggedUser;
@@ -36,16 +39,20 @@ public class UserAdminForm extends FormLayout {
   private Button save = new Button("Save");
   private Button delete = new Button("Delete");
 
-  public UserAdminForm(User loggedUser, UserInteractor userInteractor,
-      LocationInteractor locationInteractor, UserAdminView formContainer) {
+  public UserForm(User loggedUser, UserInteractor userInteractor,
+      LocationInteractor locationInteractor, Runnable function) {
     this.loggedUser = loggedUser;
     this.userInteractor = userInteractor;
     this.locationInteractor = locationInteractor;
-    this.formContainer = formContainer;
+    this.function = function;
     setSizeUndefined();
     HorizontalLayout buttons = new HorizontalLayout(save, delete);
     addComponents(username, firstName, lastName, email, password, role, locations, buttons);
-    role.setItems(UserRole.values());
+    if (loggedUser.isAdmin()) {
+      role.setItems(Arrays.asList(UserRole.values()));
+    } else {
+      role.setItems(Arrays.asList(UserRole.CLIENT, UserRole.PROVIDER));
+    }
     role.setSelectedItem(UserRole.CLIENT);
     role.setEmptySelectionAllowed(false);
     existingLocations = this.locationInteractor.findAll().stream()
@@ -63,7 +70,9 @@ public class UserAdminForm extends FormLayout {
 
   private void delete() {
     userInteractor.delete(user);
-    formContainer.updateList();
+    if (function != null) {
+      function.run();
+    }
     setVisible(false);
   }
 
@@ -80,14 +89,15 @@ public class UserAdminForm extends FormLayout {
       role.setSelectedItem(UserRole.CLIENT);
     }
     // Show delete button for only users already in the database
-    delete.setVisible(user.getId() != 0 && isLoggedUserSelectedUser(user));
+    delete
+        .setVisible(user.getId() != 0 && isLoggedUserNotSelectedUser(user) && loggedUser.isAdmin());
     setVisible(true);
     username.selectAll();
-    username.setEnabled(isLoggedUserSelectedUser(user));
-    password.setEnabled(isLoggedUserSelectedUser(user));
+    username.setEnabled(isLoggedUserNotSelectedUser(user) && loggedUser.isAdmin());
+    password.setEnabled(isLoggedUserNotSelectedUser(user) && loggedUser.isAdmin());
   }
 
-  private boolean isLoggedUserSelectedUser(User user) {
+  private boolean isLoggedUserNotSelectedUser(User user) {
     return loggedUser.getId() != user.getId();
   }
 
@@ -95,7 +105,11 @@ public class UserAdminForm extends FormLayout {
     Location location = locationInteractor.findByName(locations.getSelectedItem().get());
     user.setLocation(location);
     userInteractor.save(user);
-    formContainer.updateList();
-    setVisible(false);
+    if (function != null) {
+      function.run();
+      setVisible(false);
+    }
+    Notification
+        .show("Success!", Type.HUMANIZED_MESSAGE);
   }
 }

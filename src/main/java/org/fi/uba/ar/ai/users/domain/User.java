@@ -68,6 +68,18 @@ public class User {
     this.role = userRole;
   }
 
+  public boolean isAdmin() {
+    return role.equals(UserRole.ADMIN);
+  }
+
+  public boolean isClient() {
+    return role.equals(UserRole.CLIENT);
+  }
+
+  public boolean isProvider() {
+    return role.equals(UserRole.PROVIDER);
+  }
+
   @Override
   public boolean equals(final Object o) {
     if (this == o) {

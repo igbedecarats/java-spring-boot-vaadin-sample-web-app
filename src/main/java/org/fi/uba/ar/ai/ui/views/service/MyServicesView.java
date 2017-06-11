@@ -5,6 +5,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
@@ -52,7 +53,7 @@ public class MyServicesView extends CustomComponent implements View {
 
     rootContainer = new VerticalLayout();
     rootContainer.setSizeUndefined();
-    setCompositionRoot(rootContainer);
+
 
     searchContainer = new HorizontalLayout();
     searchContainer.setSizeUndefined();
@@ -78,7 +79,9 @@ public class MyServicesView extends CustomComponent implements View {
     HorizontalLayout servicesLayout = new HorizontalLayout(panel, form);
     servicesLayout.setSizeFull();
     rootContainer.addComponent(servicesLayout);
-
+    rootContainer.setComponentAlignment(servicesLayout, Alignment.MIDDLE_CENTER);
+    setCompositionRoot(rootContainer);
+    rootContainer.setSizeFull();
     updateList();
   }
 
@@ -94,8 +97,11 @@ public class MyServicesView extends CustomComponent implements View {
   }
 
   private void populateList(List<Service> services) {
-    services.stream().forEach(service -> servicesContainer
-        .addComponent(new ServiceComponent(service, serviceInteractor, form, this)));
+    services.stream().forEach(service -> {
+      ServiceComponent serviceComponent = new ServiceComponent(service, serviceInteractor, form, this);
+      servicesContainer.addComponent(serviceComponent);
+      servicesContainer.setComponentAlignment(serviceComponent, Alignment.TOP_CENTER);
+    });
   }
 
   public void updateList() {

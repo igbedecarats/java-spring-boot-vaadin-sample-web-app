@@ -7,6 +7,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.List;
@@ -146,12 +147,13 @@ public class ServiceForm extends FormLayout {
       serviceInteractor.save(service);
       this.setVisible(false);
       componentContainer.updateList();
+      Notification
+          .show("Success!", Type.HUMANIZED_MESSAGE);
     } catch (Exception ex) {
       Notification
           .show("An unexpected error occurred: ", ex.getMessage(), Notification.Type.ERROR_MESSAGE);
       LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
     }
-
   }
 
   public void setService(Service service) {
