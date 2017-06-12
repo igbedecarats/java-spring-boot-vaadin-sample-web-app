@@ -70,8 +70,8 @@ public class SearchServicesView extends CustomComponent implements View {
     rootLayout.setComponentAlignment(searchLayout, Alignment.TOP_CENTER);
 
     Panel panel = new Panel("Services");
-    panel.setWidth("500px");
-    panel.setHeight("500px");
+    panel.setWidth("1000px");
+    panel.setHeight("450px");
     servicesContainer.setSizeUndefined();
     panel.setContent(servicesContainer);
     rootLayout.addComponent(panel);

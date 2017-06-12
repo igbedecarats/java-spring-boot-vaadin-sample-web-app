@@ -49,7 +49,7 @@ public class QuotationInteractor {
     Contract contract = new Contract(quotation.getClient(), quotation.getService(),
         quotation.getScheduledTime(),
         quotations);
-    contractInteractor.create(contract);
+    contractInteractor.save(contract);
     quotationRepository.save(quotation);
   }
 

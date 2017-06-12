@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.Validate;
+import org.fi.uba.ar.ai.feedbacks.domain.Feedback;
 import org.fi.uba.ar.ai.quotations.domain.Quotation;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.users.domain.User;
@@ -34,12 +36,10 @@ public class Contract {
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "client_id")
-  @Setter
   private User client;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "service_id")
-  @Setter
   private Service service;
 
   @Column(name = "scheduled_time", nullable = false)
@@ -48,13 +48,23 @@ public class Contract {
   @Column(name = "creation_time", nullable = false)
   private LocalDateTime creationTime;
 
+  @Column(name = "is_client_approved", nullable = false)
+  private boolean isClientApproved;
+
+  @Column(name = "is_provider_approved", nullable = false)
+  private boolean isProviderApproved;
+
   @Setter
   @Enumerated(EnumType.STRING)
   private ContractStatus status;
 
   @OneToMany()
-  @JoinColumn(name="quotation_id", referencedColumnName="id")
+  @JoinColumn(name = "quotation_id", referencedColumnName = "id")
   private List<Quotation> quotations = new ArrayList<>();
+
+  @OneToMany()
+  @JoinColumn(name = "feedback_id", referencedColumnName = "id")
+  private List<Feedback> feedbacks = new ArrayList<>();
 
   public Contract(User client, Service service, LocalDateTime scheduledTime,
       List<Quotation> quotations) {
@@ -64,5 +74,30 @@ public class Contract {
     this.status = ContractStatus.CREATED;
     this.quotations = quotations;
     this.creationTime = LocalDateTime.now();
+    this.isClientApproved = false;
+    this.isProviderApproved = false;
+  }
+
+  public void clientApproved() {
+    if (isClientApproved == false) {
+      isClientApproved = true;
+      if (isProviderApproved) {
+        status = ContractStatus.COMPLETED;
+      }
+    }
+  }
+
+  public void providerApproved() {
+    if (isProviderApproved == false) {
+      isProviderApproved = true;
+      if (isClientApproved) {
+        status = ContractStatus.COMPLETED;
+      }
+    }
+  }
+
+  public void addFeedback(final Feedback feedback) {
+    Validate.notNull(feedback, "The Feedback cannot be null");
+    this.feedbacks.add(feedback);
   }
 }
