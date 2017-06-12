@@ -11,7 +11,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
 import org.fi.uba.ar.ai.quotations.domain.Quotation;
-import org.fi.uba.ar.ai.quotations.domain.QuotationStatus;
 import org.fi.uba.ar.ai.quotations.usecase.QuotationInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
 import org.fi.uba.ar.ai.users.domain.User;
@@ -75,14 +74,12 @@ public class ProviderQuotationsView extends CustomComponent implements View {
 
   private void decline(Object item) {
     Quotation quotation = (Quotation) item;
-    quotation.setStatus(QuotationStatus.DECLINED);
-    quotationInteractor.update(quotation);
+    quotationInteractor.decline(quotation);
   }
 
   private void approve(Object item) {
     Quotation quotation = (Quotation) item;
-    quotation.setStatus(QuotationStatus.APPROVED);
-    quotationInteractor.update(quotation);
+    quotationInteractor.approve(quotation);
   }
 
   private void updateGrid() {

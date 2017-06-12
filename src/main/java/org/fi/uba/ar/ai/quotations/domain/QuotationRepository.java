@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface QuotationRepository extends JpaRepository<Quotation, Long> {
 
-  List<Quotation> findByClientId(long id);
+  List<Quotation> findByClientIdAndStatus(long id, QuotationStatus status);
 
   List<Quotation> findByServiceProviderId(long id);
 }
