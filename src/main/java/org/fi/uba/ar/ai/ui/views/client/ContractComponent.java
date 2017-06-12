@@ -8,8 +8,10 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.VerticalLayout;
+import java.util.List;
 import org.fi.uba.ar.ai.contracts.domain.Contract;
 import org.fi.uba.ar.ai.contracts.usecase.ContractInteractor;
+import org.fi.uba.ar.ai.feedbacks.domain.Feedback;
 import org.fi.uba.ar.ai.users.domain.User;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.spring.events.EventBus.SessionEventBus;
@@ -61,8 +63,14 @@ public class ContractComponent extends CustomComponent {
     send.setIcon(VaadinIcons.PAPERPLANE_O);
     send.addClickListener(e -> this.send());
     send.setVisible(contract.isCompleted());
-    HorizontalLayout horizontalLayout = new HorizontalLayout(providerName, clientName, scheduledTime, status, done, send);
+    HorizontalLayout horizontalLayout = new HorizontalLayout(providerName, clientName,
+        scheduledTime, status, done, send);
     root.addComponentsAndExpand(horizontalLayout);
+    VerticalLayout feedbacksContainer = new VerticalLayout();
+    List<Feedback> feedbacks = contract.getFeedbacks();
+    feedbacks.stream()
+        .forEach(feedback -> feedbacksContainer.addComponent(new FeedbackComponent(feedback)));
+    root.addComponentsAndExpand(feedbacksContainer);
     root.setSizeUndefined();
     setCompositionRoot(root);
   }
