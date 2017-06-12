@@ -99,7 +99,15 @@ public class Contract {
 
   public void addFeedback(final Feedback feedback) {
     Validate.notNull(feedback, "The Feedback cannot be null");
+    if (feedbackAlreadyGivenByUser(feedback.getSender())) {
+      throw new IllegalArgumentException("Feedback already given!");
+    }
     this.feedbacks.add(feedback);
+  }
+
+  public boolean feedbackAlreadyGivenByUser(final User user) {
+    Validate.notNull(user, "The User cannot be null");
+    return feedbacks.stream().anyMatch(feedback -> feedback.getSender().equals(user));
   }
 
   public boolean isCompleted() {

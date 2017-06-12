@@ -62,7 +62,7 @@ public class ContractComponent extends CustomComponent {
     status.setCaption("Status");
     send.setIcon(VaadinIcons.PAPERPLANE_O);
     send.addClickListener(e -> this.send());
-    send.setVisible(contract.isCompleted());
+    send.setVisible(contract.isCompleted() && !contract.feedbackAlreadyGivenByUser(loggedUser));
     HorizontalLayout horizontalLayout = new HorizontalLayout(providerName, clientName,
         scheduledTime, status, done, send);
     root.addComponentsAndExpand(horizontalLayout);
