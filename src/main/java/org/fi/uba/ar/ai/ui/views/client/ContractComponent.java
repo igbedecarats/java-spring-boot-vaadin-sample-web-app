@@ -12,17 +12,21 @@ import org.fi.uba.ar.ai.contracts.domain.Contract;
 import org.fi.uba.ar.ai.contracts.usecase.ContractInteractor;
 import org.fi.uba.ar.ai.users.domain.User;
 import org.vaadin.spring.events.EventBus;
+import org.vaadin.spring.events.EventBus.SessionEventBus;
 import org.vaadin.viritin.button.ConfirmButton;
 
 public class ContractComponent extends CustomComponent {
+
+  private FeedbackForm feedbackForm;
 
   private Label serviceName = new Label();
   private Label providerName = new Label();
   private Label clientName = new Label();
   private Label scheduledTime = new Label();
   private Label status = new Label();
-  Button done = new ConfirmButton(VaadinIcons.CHECK,
+  private Button done = new ConfirmButton(VaadinIcons.CHECK,
       "Are you sure you want to mark it as done?", this::done);
+  private Button send = new Button();
 
   private User loggedUser;
   private Contract contract;
@@ -33,11 +37,12 @@ public class ContractComponent extends CustomComponent {
 
   public ContractComponent(User loggedUser, Contract contract,
       ContractInteractor contractInteractor,
-      EventBus.SessionEventBus eventBus) {
+      SessionEventBus eventBus, FeedbackForm feedbackForm) {
     this.loggedUser = loggedUser;
     this.contract = contract;
     this.contractInteractor = contractInteractor;
     this.eventBus = eventBus;
+    this.feedbackForm = feedbackForm;
 
     serviceName.setValue(contract.getService().getName());
     serviceName.setCaption("Service");
@@ -53,11 +58,18 @@ public class ContractComponent extends CustomComponent {
     scheduledTime.setCaption("Scheduled Time");
     status.setValue(contract.getStatus().name());
     status.setCaption("Status");
-    HorizontalLayout horizontalLayout = new HorizontalLayout(providerName, clientName, scheduledTime, status, done);
+    send.setIcon(VaadinIcons.PAPERPLANE_O);
+    send.addClickListener(e -> this.send());
+    send.setVisible(contract.isCompleted());
+    HorizontalLayout horizontalLayout = new HorizontalLayout(providerName, clientName, scheduledTime, status, done, send);
     root.addComponentsAndExpand(horizontalLayout);
-    root.setWidthUndefined();
-    root.setHeight("200px");
+    root.setSizeUndefined();
     setCompositionRoot(root);
+  }
+
+  private void send() {
+    feedbackForm.show(contract, loggedUser);
+    feedbackForm.openInModalPopup();
   }
 
   private void done() {

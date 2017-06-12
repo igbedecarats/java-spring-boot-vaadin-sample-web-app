@@ -45,7 +45,7 @@ public class QuotationForm extends AbstractForm<Quotation> {
     scheduledTime.setValue(LocalDateTime.now());
     setSavedHandler(quotation -> send());
     setResetHandler(quotation -> eventBus.publish(this, new QuotationModifiedEvent(quotation)));
-
+    setModalWindowTitle("Send Quotation");
     setSizeUndefined();
   }
 

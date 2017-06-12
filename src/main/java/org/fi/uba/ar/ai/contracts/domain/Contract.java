@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -62,8 +64,7 @@ public class Contract {
   @JoinColumn(name = "quotation_id", referencedColumnName = "id")
   private List<Quotation> quotations = new ArrayList<>();
 
-  @OneToMany()
-  @JoinColumn(name = "feedback_id", referencedColumnName = "id")
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "contract")
   private List<Feedback> feedbacks = new ArrayList<>();
 
   public Contract(User client, Service service, LocalDateTime scheduledTime,
@@ -99,5 +100,9 @@ public class Contract {
   public void addFeedback(final Feedback feedback) {
     Validate.notNull(feedback, "The Feedback cannot be null");
     this.feedbacks.add(feedback);
+  }
+
+  public boolean isCompleted() {
+    return ContractStatus.COMPLETED.equals(this.status);
   }
 }

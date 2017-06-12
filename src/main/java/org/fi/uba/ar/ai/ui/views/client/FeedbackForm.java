@@ -40,6 +40,7 @@ public class FeedbackForm extends AbstractForm<Feedback> {
     ratings.setEmptySelectionAllowed(false);
     setSavedHandler(feedback -> send());
     setResetHandler(feedback -> eventBus.publish(this, new FeedbackSubmittedEvent(feedback)));
+    setModalWindowTitle("Send Feedback");
     setSizeUndefined();
   }
 
