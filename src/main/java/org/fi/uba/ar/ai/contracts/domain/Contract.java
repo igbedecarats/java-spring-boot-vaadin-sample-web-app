@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -54,7 +52,8 @@ public class Contract {
   @Enumerated(EnumType.STRING)
   private ContractStatus status;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "contract")
+  @OneToMany()
+  @JoinColumn(name="quotation_id", referencedColumnName="id")
   private List<Quotation> quotations = new ArrayList<>();
 
   public Contract(User client, Service service, LocalDateTime scheduledTime,

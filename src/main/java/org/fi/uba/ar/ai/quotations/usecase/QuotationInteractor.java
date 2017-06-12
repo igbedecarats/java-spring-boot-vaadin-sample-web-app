@@ -50,5 +50,6 @@ public class QuotationInteractor {
         quotation.getScheduledTime(),
         quotations);
     contractInteractor.create(contract);
+    quotationRepository.save(quotation);
   }
 }
