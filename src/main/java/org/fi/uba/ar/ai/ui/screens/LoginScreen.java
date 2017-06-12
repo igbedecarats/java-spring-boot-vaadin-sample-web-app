@@ -9,6 +9,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -50,7 +51,10 @@ public class LoginScreen extends CustomComponent {
   }
 
   public void setLoggedOut(boolean loggedOut) {
-    loggedOutLabel.setVisible(loggedOut);
+    //loggedOutLabel.setVisible(loggedOut);
+    if (loggedOut) {
+      Notification.show("Goodbye!", Type.HUMANIZED_MESSAGE);
+    }
   }
 
   private void initLayout() {
