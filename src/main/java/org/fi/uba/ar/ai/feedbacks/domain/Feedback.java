@@ -2,6 +2,8 @@ package org.fi.uba.ar.ai.feedbacks.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -48,9 +50,13 @@ public class Feedback {
   private int rating;
 
   @Column(name = "comment", nullable = false)
-  private int comment;
+  private String comment;
 
-  public Feedback(User sender, User recipient, Contract contract, int rating, int comment) {
+  public static List<Integer> allowedRatings() {
+    return Arrays.asList(1, 2, 3, 4, 5);
+  }
+
+  public Feedback(User sender, User recipient, Contract contract, int rating, String comment) {
     this.sender = sender;
     this.recipient = recipient;
     this.contract = contract;
