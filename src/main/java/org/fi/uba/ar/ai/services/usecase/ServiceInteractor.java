@@ -104,6 +104,7 @@ public class ServiceInteractor {
   }
 
   public List<Service> findAll(String value) {
-    return serviceRepository.findByNameIgnoreCaseContaining(value);
+    String likeFilter = "%" + value.replace(" ", "%") + "%";
+    return serviceRepository.findByNameIgnoreCaseContaining("%" + likeFilter + "%");
   }
 }

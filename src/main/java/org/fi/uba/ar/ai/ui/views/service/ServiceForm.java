@@ -17,7 +17,6 @@ import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.domain.ServiceCategory;
 import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.users.domain.User;
-import org.slf4j.LoggerFactory;
 
 public class ServiceForm extends FormLayout {
 
@@ -151,8 +150,7 @@ public class ServiceForm extends FormLayout {
           .show("Success!", Type.HUMANIZED_MESSAGE);
     } catch (Exception ex) {
       Notification
-          .show("An unexpected error occurred: ", ex.getMessage(), Notification.Type.ERROR_MESSAGE);
-      LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
+          .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);
     }
   }
 

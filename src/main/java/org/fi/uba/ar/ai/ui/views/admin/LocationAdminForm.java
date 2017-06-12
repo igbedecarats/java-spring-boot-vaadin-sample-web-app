@@ -2,16 +2,20 @@ package org.fi.uba.ar.ai.ui.views.admin;
 
 import com.vaadin.data.Binder;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import org.fi.uba.ar.ai.locations.domain.Location;
 import org.fi.uba.ar.ai.locations.domain.LocationArea;
 import org.fi.uba.ar.ai.locations.usecase.LocationInteractor;
+import org.vaadin.viritin.button.ConfirmButton;
 
 public class LocationAdminForm extends FormLayout {
 
@@ -25,7 +29,8 @@ public class LocationAdminForm extends FormLayout {
   private Label latitude = new Label();
   private Label longitude = new Label();
   private Button save = new Button("Save");
-  private Button delete = new Button("Delete");
+  private Button delete = new ConfirmButton(VaadinIcons.TRASH,
+      "Are you sure you want to delete the entry?", this::delete);
 
   public LocationAdminForm(LocationInteractor locationInteractor,
       LocationAdminView formContainer) {
@@ -39,19 +44,30 @@ public class LocationAdminForm extends FormLayout {
     save.setClickShortcut(KeyCode.ENTER);
     binder.bindInstanceFields(this);
     save.addClickListener(e -> this.save());
-    delete.addClickListener(e -> this.delete());
   }
 
   private void delete() {
-    locationInteractor.delete(location);
-    formContainer.updateList();
-    setVisible(false);
+    try {
+      locationInteractor.delete(location);
+      formContainer.updateList();
+      setVisible(false);
+      Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+    } catch (Exception e) {
+      Notification
+          .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);
+    }
   }
 
   private void save() {
-    locationInteractor.save(location);
-    formContainer.updateList();
-    setVisible(false);
+    try {
+      locationInteractor.save(location);
+      formContainer.updateList();
+      setVisible(false);
+      Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+    } catch (Exception e) {
+      Notification
+          .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);
+    }
   }
 
   public void setLocation(Location location) {

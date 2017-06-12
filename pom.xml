@@ -93,6 +93,14 @@
       <artifactId>vaadin-icons</artifactId>
       <version>3.0.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.vaadin</groupId>
+      <artifactId>viritin</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.vaadin.teemu</groupId>
+      <artifactId>switch</artifactId>
+    </dependency>
 
     <!-- Swagger -->
     <dependency>
@@ -154,6 +162,16 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.vaadin</groupId>
+        <artifactId>viritin</artifactId>
+        <version>2.0.beta1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.vaadin.teemu</groupId>
+        <artifactId>switch</artifactId>
+        <version>3.0.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -170,7 +188,35 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+      <plugin>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-maven-plugin</artifactId>
+        <version>${vaadin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <!-- Needed for theme: -->
+              <goal>update-widgetset</goal>
+              <goal>compile</goal>
+              <!-- Needed for theme: -->
+              <goal>update-theme</goal>
+              <goal>compile-theme</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- Use local as value here for local widgetset compilation -->
+          <widgetsetMode>cdn</widgetsetMode>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+
+  <repositories>
+    <repository>
+      <id>vaadin-addons</id>
+      <url>http://maven.vaadin.com/vaadin-addons</url>
+    </repository>
+  </repositories>
 
 </project>

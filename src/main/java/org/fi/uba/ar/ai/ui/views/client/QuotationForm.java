@@ -48,9 +48,14 @@ public class QuotationForm extends VerticalLayout {
   }
 
   private void send() {
-    quotationInteractor.create(description.getValue(), loggedUser, service, time.getValue());
-    Notification.show("Success!", Type.HUMANIZED_MESSAGE);
-    setVisible(false);
+    try {
+      quotationInteractor.create(description.getValue(), loggedUser, service, time.getValue());
+      Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+      setVisible(false);
+    } catch (Exception e) {
+      Notification
+          .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);
+    }
   }
 
   public void show(Service service, User loggedUser) {

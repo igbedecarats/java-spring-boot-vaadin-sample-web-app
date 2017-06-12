@@ -2,6 +2,7 @@ package org.fi.uba.ar.ai.ui.views.global;
 
 import com.vaadin.data.Binder;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -18,6 +19,7 @@ import org.fi.uba.ar.ai.locations.usecase.LocationInteractor;
 import org.fi.uba.ar.ai.users.domain.User;
 import org.fi.uba.ar.ai.users.domain.UserRole;
 import org.fi.uba.ar.ai.users.usecase.UserInteractor;
+import org.vaadin.viritin.button.ConfirmButton;
 
 public class UserForm extends FormLayout {
 
@@ -37,7 +39,8 @@ public class UserForm extends FormLayout {
   private final List<String> existingLocations;
   private NativeSelect<String> locations = new NativeSelect<>("Location");
   private Button save = new Button("Save");
-  private Button delete = new Button("Delete");
+  private Button delete = new ConfirmButton(VaadinIcons.TRASH,
+      "Are you sure you want to delete the entry?", this::delete);
 
   public UserForm(User loggedUser, UserInteractor userInteractor,
       LocationInteractor locationInteractor, Runnable function) {
@@ -65,15 +68,20 @@ public class UserForm extends FormLayout {
     save.setClickShortcut(KeyCode.ENTER);
     binder.bindInstanceFields(this);
     save.addClickListener(e -> this.save());
-    delete.addClickListener(e -> this.delete());
   }
 
   private void delete() {
-    userInteractor.delete(user);
-    if (function != null) {
-      function.run();
+    try {
+      userInteractor.delete(user);
+      if (function != null) {
+        function.run();
+      }
+      Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+      setVisible(false);
+    } catch (Exception e) {
+      Notification
+          .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);
     }
-    setVisible(false);
   }
 
   public void setUser(final User user) {
@@ -102,14 +110,19 @@ public class UserForm extends FormLayout {
   }
 
   private void save() {
-    Location location = locationInteractor.findByName(locations.getSelectedItem().get());
-    user.setLocation(location);
-    userInteractor.save(user);
-    if (function != null) {
-      function.run();
-      setVisible(false);
+    try {
+      Location location = locationInteractor.findByName(locations.getSelectedItem().get());
+      user.setLocation(location);
+      userInteractor.save(user);
+      if (function != null) {
+        function.run();
+        setVisible(false);
+      }
+      Notification
+          .show("Success!", Type.HUMANIZED_MESSAGE);
+    } catch (Exception e) {
+      Notification
+          .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);
     }
-    Notification
-        .show("Success!", Type.HUMANIZED_MESSAGE);
   }
 }

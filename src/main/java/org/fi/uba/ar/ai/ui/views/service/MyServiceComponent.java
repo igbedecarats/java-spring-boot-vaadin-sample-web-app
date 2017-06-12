@@ -9,11 +9,13 @@ import org.apache.commons.lang3.Validate;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.ui.views.global.AbstractServiceComponent;
+import org.vaadin.viritin.button.ConfirmButton;
 
 public class MyServiceComponent extends AbstractServiceComponent {
 
   private Button edit = new Button();
-  private Button delete = new Button();
+  private Button delete = new ConfirmButton(VaadinIcons.TRASH,
+      "Are you sure you want to delete the entry?", this::delete);
 
   private Service service;
   private ServiceInteractor serviceInteractor;
@@ -35,8 +37,6 @@ public class MyServiceComponent extends AbstractServiceComponent {
     HorizontalLayout buttonsContainer = new HorizontalLayout();
     edit.setIcon(VaadinIcons.EDIT);
     edit.addClickListener(e -> this.edit());
-    delete.setIcon(VaadinIcons.CLOSE);
-    delete.addClickListener(e -> this.delete());
     buttonsContainer.addComponents(edit, delete);
     addComponent(buttonsContainer);
 
@@ -44,9 +44,14 @@ public class MyServiceComponent extends AbstractServiceComponent {
   }
 
   private void delete() {
-    serviceInteractor.delete(service);
-    componentContainer.updateList();
-    Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+    try {
+      serviceInteractor.delete(service);
+      componentContainer.updateList();
+      Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+    } catch (Exception e) {
+      Notification
+          .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);
+    }
   }
 
   private void edit() {

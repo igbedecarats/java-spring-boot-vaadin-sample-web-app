@@ -48,6 +48,7 @@ public class SearchServicesView extends CustomComponent implements View {
     loggedUser = SpringContextUserHolder.getUser();
     VerticalLayout searchLayout = new VerticalLayout();
     TextField searchTextField = new TextField();
+    searchTextField.setPlaceholder("Search by Name");
     searchTextField.addValueChangeListener(e -> simpleSearch(searchTextField.getValue()));
     searchTextField.setWidth("600px");
     CheckBox advanceSearch = new CheckBox("Búsqueda avanzada");
