@@ -79,6 +79,8 @@ public class ProviderQuotationsView extends CustomComponent implements View {
 
   private void approve(Object item) {
     Quotation quotation = (Quotation) item;
+
+
     quotationInteractor.approve(quotation);
   }
 

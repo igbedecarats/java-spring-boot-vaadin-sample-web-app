@@ -34,6 +34,6 @@ public class SearchServiceComponent extends AbstractServiceComponent {
 
   private void send() {
     form.show(service, loggedUser);
-    form.setVisible(true);
+    form.openInModalPopup();
   }
 }

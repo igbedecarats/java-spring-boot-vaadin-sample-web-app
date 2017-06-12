@@ -52,4 +52,8 @@ public class QuotationInteractor {
     contractInteractor.create(contract);
     quotationRepository.save(quotation);
   }
+
+  public Quotation save(Quotation quotation) {
+    return quotationRepository.save(quotation);
+  }
 }

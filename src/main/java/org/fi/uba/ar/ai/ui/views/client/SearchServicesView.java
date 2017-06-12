@@ -7,7 +7,6 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -20,6 +19,9 @@ import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
 import org.fi.uba.ar.ai.users.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus;
+import org.vaadin.spring.events.EventScope;
+import org.vaadin.spring.events.annotation.EventBusListenerMethod;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
@@ -28,11 +30,11 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 @FontAwesomeIcon(FontAwesome.HOME)
 public class SearchServicesView extends CustomComponent implements View {
 
-  private QuotationForm quotationForm;
-
   private User loggedUser;
 
   private QuotationInteractor quotationInteractor;
+  private final EventBus.SessionEventBus eventBus;
+  private final QuotationForm quotationForm;
 
   private ServiceInteractor serviceInteractor;
 
@@ -40,11 +42,17 @@ public class SearchServicesView extends CustomComponent implements View {
 
   @Autowired
   public SearchServicesView(QuotationInteractor quotationInteractor,
+      EventBus.SessionEventBus eventBus, QuotationForm quotationForm,
       ServiceInteractor serviceInteractor) {
     Validate.notNull(quotationInteractor, "The Quotation Interactor cannot be null");
+    Validate.notNull(eventBus, "The Event Bus cannot be null");
+    Validate.notNull(quotationForm, "The Quotation Form cannot be null");
     Validate.notNull(serviceInteractor, "The Service Interactor cannot be null");
     this.quotationInteractor = quotationInteractor;
     this.serviceInteractor = serviceInteractor;
+    this.eventBus = eventBus;
+    this.eventBus.subscribe(this);
+    this.quotationForm = quotationForm;
     loggedUser = SpringContextUserHolder.getUser();
     VerticalLayout searchLayout = new VerticalLayout();
     TextField searchTextField = new TextField();
@@ -66,11 +74,7 @@ public class SearchServicesView extends CustomComponent implements View {
     panel.setHeight("500px");
     servicesContainer.setSizeUndefined();
     panel.setContent(servicesContainer);
-    quotationForm = new QuotationForm(quotationInteractor);
-    quotationForm.setVisible(false);
-    HorizontalLayout servicesLayout = new HorizontalLayout(panel, quotationForm);
-    servicesLayout.setSizeFull();
-    rootLayout.addComponent(servicesLayout);
+    rootLayout.addComponent(panel);
     setCompositionRoot(rootLayout);
     simpleSearch("");
   }
@@ -81,6 +85,12 @@ public class SearchServicesView extends CustomComponent implements View {
     services.stream()
         .forEach(service -> servicesContainer
             .addComponent(new SearchServiceComponent(service, loggedUser, quotationForm)));
+  }
+
+  @EventBusListenerMethod(scope = EventScope.SESSION)
+  public void onQuotationModifiedEvent(QuotationModifiedEvent event) {
+    simpleSearch("");
+    quotationForm.closePopup();
   }
 
   @Override

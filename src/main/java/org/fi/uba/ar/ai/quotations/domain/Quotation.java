@@ -43,6 +43,7 @@ public class Quotation {
   private Service service;
 
   @Column(name = "scheduled_time", nullable = false)
+  @Setter
   private LocalDateTime scheduledTime;
 
   @Column(name = "creation_time", nullable = false)
