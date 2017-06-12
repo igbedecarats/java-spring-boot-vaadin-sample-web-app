@@ -52,7 +52,6 @@ public class MyServicesView extends CustomComponent implements View {
     this.serviceInteractor = serviceInteractor;
 
     rootContainer = new VerticalLayout();
-    rootContainer.setSizeUndefined();
 
 
     searchContainer = new HorizontalLayout();

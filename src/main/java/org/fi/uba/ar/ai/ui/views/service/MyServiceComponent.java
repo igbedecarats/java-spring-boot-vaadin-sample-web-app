@@ -8,9 +8,9 @@ import com.vaadin.ui.Notification.Type;
 import org.apache.commons.lang3.Validate;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
-import org.fi.uba.ar.ai.ui.views.client.ServiceComponent;
+import org.fi.uba.ar.ai.ui.views.global.AbstractServiceComponent;
 
-public class MyServiceComponent extends ServiceComponent {
+public class MyServiceComponent extends AbstractServiceComponent {
 
   private Button edit = new Button();
   private Button delete = new Button();
@@ -46,8 +46,7 @@ public class MyServiceComponent extends ServiceComponent {
   private void delete() {
     serviceInteractor.delete(service);
     componentContainer.updateList();
-    Notification
-        .show("Success!", Type.HUMANIZED_MESSAGE);
+    Notification.show("Success!", Type.HUMANIZED_MESSAGE);
   }
 
   private void edit() {

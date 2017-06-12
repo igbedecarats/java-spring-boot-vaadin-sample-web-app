@@ -7,12 +7,14 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import java.util.List;
+import org.apache.commons.lang3.Validate;
 import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
-import org.fi.uba.ar.ai.locations.usecase.LocationInteractor;
+import org.fi.uba.ar.ai.quotations.usecase.QuotationInteractor;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
@@ -26,20 +28,24 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 @FontAwesomeIcon(FontAwesome.HOME)
 public class SearchServicesView extends CustomComponent implements View {
 
+  private QuotationForm quotationForm;
+
   private User loggedUser;
 
-  private LocationInteractor locationInteractor;
+  private QuotationInteractor quotationInteractor;
 
   private ServiceInteractor serviceInteractor;
 
   private VerticalLayout servicesContainer = new VerticalLayout();
 
   @Autowired
-  public SearchServicesView(LocationInteractor locationInteractor,
+  public SearchServicesView(QuotationInteractor quotationInteractor,
       ServiceInteractor serviceInteractor) {
-    this.locationInteractor = locationInteractor;
+    Validate.notNull(quotationInteractor, "The Quotation Interactor cannot be null");
+    Validate.notNull(serviceInteractor, "The Service Interactor cannot be null");
+    this.quotationInteractor = quotationInteractor;
     this.serviceInteractor = serviceInteractor;
-    User loggedUser = SpringContextUserHolder.getUser();
+    loggedUser = SpringContextUserHolder.getUser();
     VerticalLayout searchLayout = new VerticalLayout();
     TextField searchTextField = new TextField();
     searchTextField.addValueChangeListener(e -> simpleSearch(searchTextField.getValue()));
@@ -53,13 +59,18 @@ public class SearchServicesView extends CustomComponent implements View {
     rootLayout.addComponent(searchLayout);
     rootLayout.setSizeFull();
     rootLayout.setComponentAlignment(searchLayout, Alignment.TOP_CENTER);
+
     Panel panel = new Panel("Services");
-    panel.setContent(servicesContainer);
-    panel.setSizeFull();
+    panel.setWidth("500px");
+    panel.setHeight("500px");
     servicesContainer.setSizeUndefined();
-    rootLayout.addComponent(panel);
+    panel.setContent(servicesContainer);
+    quotationForm = new QuotationForm(quotationInteractor);
+    quotationForm.setVisible(false);
+    HorizontalLayout servicesLayout = new HorizontalLayout(panel, quotationForm);
+    servicesLayout.setSizeFull();
+    rootLayout.addComponent(servicesLayout);
     setCompositionRoot(rootLayout);
-    setSizeFull();
     simpleSearch("");
   }
 
@@ -67,7 +78,8 @@ public class SearchServicesView extends CustomComponent implements View {
     List<Service> services = serviceInteractor.findAll(value);
     servicesContainer.removeAllComponents();
     services.stream()
-        .forEach(service -> servicesContainer.addComponent(new ServiceComponent(service)));
+        .forEach(service -> servicesContainer
+            .addComponent(new SearchServiceComponent(service, loggedUser, quotationForm)));
   }
 
   @Override

@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui.views.client;
+package org.fi.uba.ar.ai.ui.views.global;
 
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.HorizontalLayout;
@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.fi.uba.ar.ai.services.domain.Service;
 
-public class ServiceComponent extends VerticalLayout {
+public abstract class AbstractServiceComponent extends VerticalLayout {
 
   protected Label name = new Label();
   protected Label description = new Label();
@@ -19,11 +19,11 @@ public class ServiceComponent extends VerticalLayout {
   protected Label locationArea = new Label();
   protected Label times = new Label();
   protected Label days = new Label();
+  protected Service service;
 
-
-  public ServiceComponent(final Service service) {
+  public AbstractServiceComponent(final Service service) {
     Validate.notNull(service, "The Service cannot be null.");
-
+    this.service = service;
     name.setCaption("<h2> Servicio </h2> ");
     name.setCaptionAsHtml(true);
     name.setValue(service.getName());
