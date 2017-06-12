@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Set;
 import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.Validate;
+import org.fi.uba.ar.ai.feedbacks.domain.Feedback;
+import org.fi.uba.ar.ai.feedbacks.domain.FeedbackRepository;
 import org.fi.uba.ar.ai.locations.domain.Location;
 import org.fi.uba.ar.ai.locations.domain.LocationRepository;
+import org.fi.uba.ar.ai.services.domain.RatedService;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.domain.ServiceCategory;
 import org.fi.uba.ar.ai.services.domain.ServiceCategoryRepository;
@@ -28,16 +31,20 @@ public class ServiceInteractor {
 
   private LocationRepository locationRepository;
 
+  private FeedbackRepository feedbackRepository;
+
   public ServiceInteractor(ServiceRepository serviceRepository,
       ServiceCategoryRepository serviceCategoryRepository,
       ServiceSubCategoryRepository serviceSubCategoryRepository,
       UserRepository userRepository,
-      LocationRepository locationRepository) {
+      LocationRepository locationRepository,
+      FeedbackRepository feedbackRepository) {
     this.serviceRepository = serviceRepository;
     this.serviceCategoryRepository = serviceCategoryRepository;
     this.serviceSubCategoryRepository = serviceSubCategoryRepository;
     this.userRepository = userRepository;
     this.locationRepository = locationRepository;
+    this.feedbackRepository = feedbackRepository;
   }
 
   public Service find(final long serviceId) {
@@ -83,14 +90,6 @@ public class ServiceInteractor {
     serviceRepository.delete(service);
   }
 
-  public List<Service> findAll(long id) {
-    return serviceRepository.findByProviderId(id);
-  }
-
-  public List<Service> findAll(long id, String name) {
-    return serviceRepository.findByProviderIdAndNameIgnoreCaseContaining(id, name);
-  }
-
   public List<ServiceCategory> findAllCategories() {
     return (List<ServiceCategory>) serviceCategoryRepository.findAll();
   }
@@ -103,8 +102,36 @@ public class ServiceInteractor {
     return serviceRepository.save(service);
   }
 
-  public List<Service> findAll(String value) {
+  public List<Service> findAllByProviderId(long id) {
+    List<Service> services = serviceRepository.findByProviderId(id);
+    return services;
+  }
+
+  public List<Service> findAllByProviderIdMatchingName(long id, String name) {
+    String likeFilter = "%" + name.replace(" ", "%") + "%";
+    List<Service> services = serviceRepository
+        .findByProviderIdAndNameIgnoreCaseContaining(id, "%" + likeFilter + "%");
+    return services;
+  }
+
+  public List<Service> findAllMatchingName(String value) {
     String likeFilter = "%" + value.replace(" ", "%") + "%";
-    return serviceRepository.findByNameIgnoreCaseContaining("%" + likeFilter + "%");
+    List<Service> services = serviceRepository
+        .findByNameIgnoreCaseContaining("%" + likeFilter + "%");
+    return services;
+  }
+
+
+  public RatedService calculateRate(Service service, User user) {
+    List<Feedback> feedbacks = feedbackRepository
+        .findByContractServiceIdAndRecipientId(service.getId(), user.getId());
+    float rating = 0f;
+    for (Feedback feedback : feedbacks) {
+      rating += feedback.getRating();
+    }
+    if (feedbacks.size() > 0) {
+      rating = rating / feedbacks.size();
+    }
+    return new RatedService(service, rating);
   }
 }

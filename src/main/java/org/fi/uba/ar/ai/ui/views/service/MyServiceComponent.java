@@ -9,6 +9,7 @@ import org.apache.commons.lang3.Validate;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.ui.views.global.AbstractServiceComponent;
+import org.fi.uba.ar.ai.users.domain.User;
 import org.vaadin.viritin.button.ConfirmButton;
 
 public class MyServiceComponent extends AbstractServiceComponent {
@@ -22,9 +23,10 @@ public class MyServiceComponent extends AbstractServiceComponent {
   private ServiceForm form;
   private MyServicesView componentContainer;
 
-  public MyServiceComponent(final Service service, final ServiceInteractor serviceInteractor,
+  public MyServiceComponent(final Service service, User loggedUser,
+      final ServiceInteractor serviceInteractor,
       final ServiceForm form, final MyServicesView componentContainer) {
-    super(service);
+    super(service, loggedUser, serviceInteractor);
     Validate.notNull(serviceInteractor, "The Service Interactor cannot be null.");
     Validate.notNull(form, "The form cannot be null.");
     Validate.notNull(componentContainer, "The Component Container cannot be null.");

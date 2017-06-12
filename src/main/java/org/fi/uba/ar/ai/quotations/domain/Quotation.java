@@ -62,4 +62,9 @@ public class Quotation {
     this.creationTime = LocalDateTime.now();
     this.status = QuotationStatus.CREATED;
   }
+
+  public boolean isCreated() {
+    return status.equals(QuotationStatus.CREATED);
+  }
+
 }

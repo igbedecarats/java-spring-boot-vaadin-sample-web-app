@@ -11,6 +11,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.Validate;
 import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
 import org.fi.uba.ar.ai.quotations.usecase.QuotationInteractor;
@@ -32,10 +33,10 @@ public class SearchServicesView extends CustomComponent implements View {
 
   private User loggedUser;
 
-  private QuotationInteractor quotationInteractor;
   private final EventBus.SessionEventBus eventBus;
   private final QuotationForm quotationForm;
 
+  private QuotationInteractor quotationInteractor;
   private ServiceInteractor serviceInteractor;
 
   private VerticalLayout servicesContainer = new VerticalLayout();
@@ -60,6 +61,7 @@ public class SearchServicesView extends CustomComponent implements View {
     searchTextField.addValueChangeListener(e -> simpleSearch(searchTextField.getValue()));
     searchTextField.setWidth("600px");
     CheckBox advanceSearch = new CheckBox("Búsqueda avanzada");
+    advanceSearch.setVisible(false);
     searchLayout.addComponents(searchTextField, advanceSearch);
     searchLayout.setSizeUndefined();
     searchLayout.setComponentAlignment(searchTextField, Alignment.TOP_CENTER);
@@ -80,11 +82,13 @@ public class SearchServicesView extends CustomComponent implements View {
   }
 
   private void simpleSearch(String value) {
-    List<Service> services = serviceInteractor.findAll(value);
+    List<Service> services = serviceInteractor.findAllMatchingName(value).stream()
+        .filter(service -> !service.getProvider().equals(loggedUser)).collect(Collectors.toList());
     servicesContainer.removeAllComponents();
     services.stream()
         .forEach(service -> servicesContainer
-            .addComponent(new SearchServiceComponent(service, loggedUser, quotationForm)));
+            .addComponent(new SearchServiceComponent(service, loggedUser, serviceInteractor,
+                quotationForm)));
   }
 
   @EventBusListenerMethod(scope = EventScope.SESSION)

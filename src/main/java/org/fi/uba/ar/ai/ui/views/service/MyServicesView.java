@@ -50,9 +50,7 @@ public class MyServicesView extends CustomComponent implements View {
       ServiceInteractor serviceInteractor) {
     this.locationInteractor = locationInteractor;
     this.serviceInteractor = serviceInteractor;
-
     rootContainer = new VerticalLayout();
-
 
     searchContainer = new HorizontalLayout();
     searchContainer.setSizeUndefined();
@@ -93,13 +91,15 @@ public class MyServicesView extends CustomComponent implements View {
 
   private void search(String serviceName) {
     servicesContainer.removeAllComponents();
-    List<Service> services = serviceInteractor.findAll(loggedUser.getId(), serviceName);
+    List<Service> services = serviceInteractor
+        .findAllByProviderIdMatchingName(loggedUser.getId(), serviceName);
     populateList(services);
   }
 
   private void populateList(List<Service> services) {
     services.stream().forEach(service -> {
-      MyServiceComponent myServiceComponent = new MyServiceComponent(service, serviceInteractor, form, this);
+      MyServiceComponent myServiceComponent = new MyServiceComponent(service, loggedUser,
+          serviceInteractor, form, this);
       servicesContainer.addComponent(myServiceComponent);
       servicesContainer.setComponentAlignment(myServiceComponent, Alignment.TOP_CENTER);
     });
@@ -107,7 +107,7 @@ public class MyServicesView extends CustomComponent implements View {
 
   public void updateList() {
     servicesContainer.removeAllComponents();
-    List<Service> services = serviceInteractor.findAll(loggedUser.getId());
+    List<Service> services = serviceInteractor.findAllByProviderId(loggedUser.getId());
     populateList(services);
   }
 

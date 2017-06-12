@@ -4,6 +4,7 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import org.fi.uba.ar.ai.services.domain.Service;
+import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.ui.views.global.AbstractServiceComponent;
 import org.fi.uba.ar.ai.users.domain.User;
 
@@ -15,10 +16,9 @@ public class SearchServiceComponent extends AbstractServiceComponent {
 
   private User loggedUser;
 
-  public SearchServiceComponent(final Service service,
-      User loggedUser,
-      QuotationForm quotationForm) {
-    super(service);
+  public SearchServiceComponent(final Service service, User loggedUser,
+      ServiceInteractor serviceInteractor, QuotationForm quotationForm) {
+    super(service, loggedUser, serviceInteractor);
     this.loggedUser = loggedUser;
 
     this.form = quotationForm;

@@ -60,6 +60,7 @@ public class ContractComponent extends CustomComponent {
     scheduledTime.setCaption("Scheduled Time");
     status.setValue(contract.getStatus().name());
     status.setCaption("Status");
+    done.setVisible(shouldShowDoneButton());
     send.setIcon(VaadinIcons.PAPERPLANE_O);
     send.addClickListener(e -> this.send());
     send.setVisible(contract.isCompleted() && !contract.feedbackAlreadyGivenByUser(loggedUser));
@@ -73,6 +74,10 @@ public class ContractComponent extends CustomComponent {
     root.addComponentsAndExpand(feedbacksContainer);
     root.setSizeUndefined();
     setCompositionRoot(root);
+  }
+
+  private boolean shouldShowDoneButton() {
+    return !contract.isCompleted();
   }
 
   private void send() {

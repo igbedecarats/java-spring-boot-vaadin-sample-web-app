@@ -82,6 +82,7 @@ public class Contract {
   public void clientApproved() {
     if (isClientApproved == false) {
       isClientApproved = true;
+      status = ContractStatus.DONE_BY_CLIENT;
       if (isProviderApproved) {
         status = ContractStatus.COMPLETED;
       }
@@ -91,6 +92,7 @@ public class Contract {
   public void providerApproved() {
     if (isProviderApproved == false) {
       isProviderApproved = true;
+      status = ContractStatus.DONE_BY_PROVIDER;
       if (isClientApproved) {
         status = ContractStatus.COMPLETED;
       }

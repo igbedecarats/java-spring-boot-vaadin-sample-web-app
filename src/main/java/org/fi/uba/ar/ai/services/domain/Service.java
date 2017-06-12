@@ -37,51 +37,51 @@ public class Service {
 
   @Id
   @GeneratedValue
-  private long id;
+  protected long id;
 
   @Column(name = "name", nullable = false)
   @Setter
-  private String name;
+  protected String name;
 
   @Column(name = "description", nullable = false)
   @Setter
-  private String description;
+  protected String description;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "category_id")
   @Setter
-  private ServiceCategory category;
+  protected ServiceCategory category;
 
   @ManyToOne
   @JoinColumn(name = "sub_category_id")
   @Setter
-  private ServiceSubCategory subCategory;
+  protected ServiceSubCategory subCategory;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "provider_id")
   @Setter
-  private User provider;
+  protected User provider;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "location_id")
   @Setter
-  private Location location;
+  protected Location location;
 
   @Column(name = "start_time")
   @Setter
-  private String startTime;
+  protected String startTime;
 
   @Column(name = "end_time")
   @Setter
-  private String endTime;
+  protected String endTime;
 
   @Column(name = "start_day")
   @Setter
-  private Integer startDay;
+  protected Integer startDay;
 
   @Column(name = "end_day")
   @Setter
-  private Integer endDay;
+  protected Integer endDay;
 
   public Service(String name, String description,
       ServiceCategory category, User provider, Location location) {

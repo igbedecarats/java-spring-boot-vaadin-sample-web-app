@@ -7,6 +7,8 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
@@ -73,15 +75,35 @@ public class ProviderQuotationsView extends CustomComponent implements View {
   }
 
   private void decline(Object item) {
-    Quotation quotation = (Quotation) item;
-    quotationInteractor.decline(quotation);
+    try {
+      Quotation quotation = (Quotation) item;
+      if (quotation.isCreated()) {
+        quotationInteractor.decline(quotation);
+        Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+      } else {
+        Notification
+            .show("Quotation already marked as " + quotation.getStatus(), Type.WARNING_MESSAGE);
+      }
+    } catch (Exception e) {
+      Notification
+          .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);
+    }
   }
 
   private void approve(Object item) {
-    Quotation quotation = (Quotation) item;
-
-
-    quotationInteractor.approve(quotation);
+    try {
+      Quotation quotation = (Quotation) item;
+      if (quotation.isCreated()) {
+        quotationInteractor.approve(quotation);
+        Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+      } else {
+        Notification
+            .show("Quotation already marked as " + quotation.getStatus(), Type.WARNING_MESSAGE);
+      }
+    } catch (Exception e) {
+      Notification
+          .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);
+    }
   }
 
   private void updateGrid() {

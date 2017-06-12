@@ -35,7 +35,7 @@ public class QuotationInteractor {
   }
 
   public List<Quotation> findByProvider(User loggedUser) {
-    return quotationRepository.findByServiceProviderId(loggedUser.getId());
+    return quotationRepository.findByServiceProviderIdAndStatus(loggedUser.getId(), QuotationStatus.CREATED);
   }
 
   public void decline(Quotation quotation) {
