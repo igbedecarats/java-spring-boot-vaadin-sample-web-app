@@ -13,7 +13,6 @@ public class SearchServiceComponent extends AbstractServiceComponent {
 
   private QuotationForm form;
 
-
   private User loggedUser;
 
   public SearchServiceComponent(final Service service,

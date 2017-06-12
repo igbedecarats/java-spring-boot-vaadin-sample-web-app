@@ -1,5 +1,5 @@
 package org.fi.uba.ar.ai.contracts.domain;
 
 public enum ContractStatus {
-  CREATED, COMPLETED;
+  IN_PROGRESS, COMPLETED;
 }

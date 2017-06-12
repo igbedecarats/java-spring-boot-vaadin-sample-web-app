@@ -71,7 +71,7 @@ public class Contract {
     this.client = client;
     this.service = service;
     this.scheduledTime = scheduledTime;
-    this.status = ContractStatus.CREATED;
+    this.status = ContractStatus.IN_PROGRESS;
     this.quotations = quotations;
     this.creationTime = LocalDateTime.now();
     this.isClientApproved = false;
