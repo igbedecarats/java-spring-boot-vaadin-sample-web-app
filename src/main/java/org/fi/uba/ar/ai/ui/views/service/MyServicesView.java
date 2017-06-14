@@ -14,13 +14,15 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import java.util.List;
 import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
-import org.fi.uba.ar.ai.locations.usecase.LocationInteractor;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
 import org.fi.uba.ar.ai.users.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.vaadin.spring.events.EventBus;
+import org.vaadin.spring.events.EventScope;
+import org.vaadin.spring.events.annotation.EventBusListenerMethod;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
@@ -32,61 +34,57 @@ public class MyServicesView extends CustomComponent implements View {
 
   private User loggedUser;
 
-  private LocationInteractor locationInteractor;
-
   private ServiceInteractor serviceInteractor;
 
-  private VerticalLayout rootContainer;
-
-  private HorizontalLayout searchContainer;
+  private final EventBus.SessionEventBus eventBus;
 
   private ServiceForm form;
 
-  private VerticalLayout servicesContainer;
+  private VerticalLayout servicesContainer = new VerticalLayout();
 
 
   @Autowired
-  public MyServicesView(LocationInteractor locationInteractor,
+  public MyServicesView(ServiceForm form, EventBus.SessionEventBus eventBus,
       ServiceInteractor serviceInteractor) {
-    this.locationInteractor = locationInteractor;
-    this.serviceInteractor = serviceInteractor;
-    rootContainer = new VerticalLayout();
 
-    searchContainer = new HorizontalLayout();
-    searchContainer.setSizeUndefined();
-    rootContainer.addComponent(searchContainer);
-    TextField searchServiceName = new TextField();
-    Button search = new Button();
-    search.setIcon(VaadinIcons.SEARCH);
-    search.addClickListener(e -> this.search(searchServiceName.getValue()));
+    this.serviceInteractor = serviceInteractor;
+    this.eventBus = eventBus;
+    this.eventBus.subscribe(this);
+    this.form = form;
+    loggedUser = SpringContextUserHolder.getUser();
+
+    VerticalLayout searchAndAddLayout = new VerticalLayout();
+    HorizontalLayout hl = new HorizontalLayout();
+    hl.setSizeUndefined();
+    TextField searchTextField = new TextField();
+    searchTextField.setPlaceholder("Search by Name");
+    searchTextField.addValueChangeListener(e -> search(searchTextField.getValue()));
+    searchTextField.setWidth("600px");
     Button add = new Button();
     add.setIcon(VaadinIcons.PLUS);
     add.addClickListener(e -> add());
-    searchContainer.addComponents(searchServiceName, search, add);
+    hl.addComponentsAndExpand(searchTextField, add);
+    searchAndAddLayout.addComponents(hl);
+    searchAndAddLayout.setSizeUndefined();
+    searchAndAddLayout.setComponentAlignment(hl, Alignment.TOP_CENTER);
+    VerticalLayout rootLayout = new VerticalLayout();
+    rootLayout.addComponent(searchAndAddLayout);
+    rootLayout.setSizeFull();
+    rootLayout.setComponentAlignment(searchAndAddLayout, Alignment.TOP_CENTER);
 
-    servicesContainer = new VerticalLayout();
+    Panel panel = new Panel("Services");
+    panel.setWidth("1000px");
+    panel.setHeight("450px");
     servicesContainer.setSizeUndefined();
-    Panel panel = new Panel("My Services");
     panel.setContent(servicesContainer);
-    panel.setWidth("500px");
-    panel.setHeight("550px");
-    loggedUser = SpringContextUserHolder.getUser();
-    form = new ServiceForm(loggedUser, this.serviceInteractor, this.locationInteractor, this);
-    form.setVisible(false);
-    HorizontalLayout servicesLayout = new HorizontalLayout(panel, form);
-    servicesLayout.setSizeFull();
-    servicesLayout.setMargin(true);
-    servicesLayout.setSpacing(true);
-    rootContainer.addComponent(servicesLayout);
-    rootContainer.setComponentAlignment(servicesLayout, Alignment.MIDDLE_CENTER);
-    setCompositionRoot(rootContainer);
-    rootContainer.setSizeFull();
-    updateList();
+    rootLayout.addComponent(panel);
+    setCompositionRoot(rootLayout);
+    search("");
   }
 
   private void add() {
     form.setService(new Service());
-    form.setVisible(true);
+    form.openInModalPopup();
   }
 
   private void search(String serviceName) {
@@ -101,7 +99,6 @@ public class MyServicesView extends CustomComponent implements View {
       MyServiceComponent myServiceComponent = new MyServiceComponent(service, loggedUser,
           serviceInteractor, form, this);
       servicesContainer.addComponent(myServiceComponent);
-      servicesContainer.setComponentAlignment(myServiceComponent, Alignment.TOP_CENTER);
     });
   }
 
@@ -109,6 +106,12 @@ public class MyServicesView extends CustomComponent implements View {
     servicesContainer.removeAllComponents();
     List<Service> services = serviceInteractor.findAllByProviderId(loggedUser.getId());
     populateList(services);
+  }
+
+  @EventBusListenerMethod(scope = EventScope.SESSION)
+  public void onServiceCreatedEvent(ServiceCreatedEvent event) {
+    search("");
+    form.closePopup();
   }
 
   @Override

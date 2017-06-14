@@ -1,30 +1,37 @@
 package org.fi.uba.ar.ai.ui.views.service;
 
 import com.vaadin.data.Binder;
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.FormLayout;
+import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.UIScope;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.themes.ValoTheme;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
 import org.fi.uba.ar.ai.locations.usecase.LocationInteractor;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.domain.ServiceCategory;
 import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.users.domain.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus;
+import org.vaadin.viritin.form.AbstractForm;
+import org.vaadin.viritin.layouts.MFormLayout;
+import org.vaadin.viritin.layouts.MVerticalLayout;
 
-public class ServiceForm extends FormLayout {
+@UIScope
+@SpringComponent
+public class ServiceForm extends AbstractForm<Service> {
 
   private User loggedUser;
   private Service service;
   private ServiceInteractor serviceInteractor;
   private LocationInteractor locationInteractor;
-  private MyServicesView componentContainer;
+  private final EventBus.SessionEventBus eventBus;
 
   private Binder<Service> binder = new Binder<>(Service.class);
 
@@ -41,23 +48,27 @@ public class ServiceForm extends FormLayout {
   private List<String> daysOfTheWeek = Service.getLocalizedDaysOfTheWeek();
   private NativeSelect<String> startDays = new NativeSelect<>("Start Day");
   private NativeSelect<String> endDays = new NativeSelect<>("End Day");
-  private Button cancel = new Button("Cancel");
-  private Button save = new Button("Save");
 
-  public ServiceForm(User loggedUser,
-      ServiceInteractor serviceInteractor,
+  private final HorizontalLayout categoriesContainer = new HorizontalLayout();
+  private final HorizontalLayout timesContainer = new HorizontalLayout();
+  private final HorizontalLayout daysContainer = new HorizontalLayout();
+
+  @Autowired
+  public ServiceForm(ServiceInteractor serviceInteractor,
       LocationInteractor locationInteractor,
-      MyServicesView componentContainer) {
-    this.loggedUser = loggedUser;
+      EventBus.SessionEventBus eventBus) {
+    super(Service.class);
+    this.loggedUser = SpringContextUserHolder.getUser();
     this.service = new Service();
     this.serviceInteractor = serviceInteractor;
     this.locationInteractor = locationInteractor;
-    this.componentContainer = componentContainer;
+    this.eventBus = eventBus;
 
     binder.bindInstanceFields(this);
 
     updateCategories();
     categories.setItems(existingCategories);
+    categories.setEmptySelectionAllowed(false);
     categories.setSelectedItem(existingCategories.stream().findFirst().get());
     categories.addValueChangeListener(event -> {
       updateSubCategories();
@@ -69,34 +80,23 @@ public class ServiceForm extends FormLayout {
     subCategories.setItems(existingSubCategories);
     subCategories.setSelectedItem(existingSubCategories.stream().findFirst().get());
 
-    HorizontalLayout categoriesContainer = new HorizontalLayout();
     categoriesContainer.addComponents(categories, subCategories);
 
     updateLocations();
     locations.setItems(existingLocations);
+    locations.setEmptySelectionAllowed(false);
 
-    HorizontalLayout timesContainer = new HorizontalLayout();
     timesContainer.addComponents(startTime, endTime);
 
-    HorizontalLayout daysContainer = new HorizontalLayout();
     startDays.setItems(daysOfTheWeek);
     endDays.setItems(daysOfTheWeek);
     startDays.setSelectedItem(daysOfTheWeek.stream().findFirst().get());
     endDays.setSelectedItem(daysOfTheWeek.stream().findFirst().get());
     daysContainer.addComponents(startDays, endDays);
 
-    HorizontalLayout buttonsContainer = new HorizontalLayout();
-    save.setStyleName(ValoTheme.BUTTON_PRIMARY);
-    save.setClickShortcut(KeyCode.ENTER);
-    save.addClickListener(e -> this.save());
-    cancel.setStyleName(ValoTheme.BUTTON_QUIET);
-    cancel.setClickShortcut(KeyCode.ESCAPE);
-    cancel.addClickListener(e -> this.setVisible(false));
-    buttonsContainer.addComponents(cancel, save);
-
-    this.addComponents(name, description, categoriesContainer, locations, timesContainer,
-        daysContainer, buttonsContainer);
-
+    setSavedHandler(service -> save());
+    setResetHandler(service -> eventBus.publish(this, new ServiceCreatedEvent(service)));
+    setModalWindowTitle("Service");
     this.setSizeUndefined();
   }
 
@@ -144,8 +144,7 @@ public class ServiceForm extends FormLayout {
         service.setLocalizedEndDay(endDays.getSelectedItem().get());
       }
       serviceInteractor.save(service);
-      this.setVisible(false);
-      componentContainer.updateList();
+      eventBus.publish(this, new ServiceCreatedEvent(service));
       Notification
           .show("Success!", Type.HUMANIZED_MESSAGE);
     } catch (Exception ex) {
@@ -159,13 +158,9 @@ public class ServiceForm extends FormLayout {
     binder.setBean(service);
     updateLocations();
     locations.setItems(existingLocations);
-    if (service.getLocation() == null) {
-      locations.setSelectedItem(
-          loggedUser.getLocation() != null ? loggedUser.getLocation().getName()
-              : existingLocations.stream().findFirst().get());
-    } else {
-      locations.setSelectedItem(service.getLocation().getName());
-    }
+    locations.setSelectedItem(
+        loggedUser.getLocation() != null ? loggedUser.getLocation().getName()
+            : existingLocations.stream().findFirst().get());
     updateCategories();
     categories.setItems(existingCategories);
     if (service.getCategory() == null) {
@@ -196,5 +191,13 @@ public class ServiceForm extends FormLayout {
         : daysOfTheWeek.stream().findFirst().get());
     endDays.setSelectedItem(service.getEndDay() != null ? service.getLocalizedEndDay()
         : daysOfTheWeek.stream().findFirst().get());
+  }
+
+  @Override
+  protected Component createContent() {
+    return new MVerticalLayout(
+        new MFormLayout(name, description, categoriesContainer, locations, timesContainer,
+            daysContainer).withWidth(""),
+        getToolbar()).withWidth("");
   }
 }

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.Validate;
 import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
-import org.fi.uba.ar.ai.quotations.usecase.QuotationInteractor;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
@@ -34,22 +33,19 @@ public class SearchServicesView extends CustomComponent implements View {
   private User loggedUser;
 
   private final EventBus.SessionEventBus eventBus;
+
   private final QuotationForm quotationForm;
 
-  private QuotationInteractor quotationInteractor;
   private ServiceInteractor serviceInteractor;
 
   private VerticalLayout servicesContainer = new VerticalLayout();
 
   @Autowired
-  public SearchServicesView(QuotationInteractor quotationInteractor,
-      EventBus.SessionEventBus eventBus, QuotationForm quotationForm,
+  public SearchServicesView(EventBus.SessionEventBus eventBus, QuotationForm quotationForm,
       ServiceInteractor serviceInteractor) {
-    Validate.notNull(quotationInteractor, "The Quotation Interactor cannot be null");
     Validate.notNull(eventBus, "The Event Bus cannot be null");
     Validate.notNull(quotationForm, "The Quotation Form cannot be null");
     Validate.notNull(serviceInteractor, "The Service Interactor cannot be null");
-    this.quotationInteractor = quotationInteractor;
     this.serviceInteractor = serviceInteractor;
     this.eventBus = eventBus;
     this.eventBus.subscribe(this);

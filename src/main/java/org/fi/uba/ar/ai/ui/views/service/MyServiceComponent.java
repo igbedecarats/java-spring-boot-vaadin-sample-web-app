@@ -58,7 +58,6 @@ public class MyServiceComponent extends AbstractServiceComponent {
 
   private void edit() {
     form.setService(service);
-    form.setVisible(true);
+    form.openInModalPopup();
   }
-
 }
