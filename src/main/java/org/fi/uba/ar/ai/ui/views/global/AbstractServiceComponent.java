@@ -76,7 +76,8 @@ public abstract class AbstractServiceComponent extends VerticalLayout {
     provider.setVisible(!loggedUser.equals(service.getProvider()));
     provider.setStyleName(ValoTheme.LABEL_BOLD);
     rating
-        .setValue(Float.toString(serviceInteractor.calculateRate(service, loggedUser).getRating()));
+        .setValue(Float
+            .toString(serviceInteractor.calculateRate(service, service.getProvider()).getRating()));
     providerContainer.addComponents(provider, rating);
     rating.setStyleName(ValoTheme.LABEL_BOLD);
     addComponent(providerContainer);
