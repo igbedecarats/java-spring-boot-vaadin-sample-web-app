@@ -6,15 +6,19 @@ import org.vaadin.spring.sidebar.annotation.SideBarSections;
 
 @Component
 @SideBarSections({
-    @SideBarSection(id = Sections.SERVICES, caption = "Services"),
+    @SideBarSection(id = Sections.SEARCH),
     @SideBarSection(id = Sections.ACCOUNT, caption = "Account"),
+    @SideBarSection(id = Sections.SERVICES, caption = "Services"),
+    @SideBarSection(id = Sections.PROFILE, caption = "Profile"),
     @SideBarSection(id = Sections.ADMIN, caption = "Admin"),
     @SideBarSection(id = Sections.OPERATIONS)
 })
 public class Sections {
 
-  public static final String SERVICES = "services";
+  public static final String SEARCH = "search";
   public static final String ACCOUNT = "account";
+  public static final String SERVICES = "services";
+  public static final String PROFILE = "profile";
   public static final String ADMIN = "admin";
   public static final String OPERATIONS = "operations";
 }

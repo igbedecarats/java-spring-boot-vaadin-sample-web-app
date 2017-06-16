@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui.views.client;
+package org.fi.uba.ar.ai.ui.views.account;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -18,9 +18,9 @@ import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @SpringView(name = "quotations")
-@SideBarItem(sectionId = Sections.SERVICES, caption = "Quotations", order = 1)
+@SideBarItem(sectionId = Sections.ACCOUNT, caption = "Sent Quotations", order = 1)
 @FontAwesomeIcon(FontAwesome.HOME)
-public class QuotationsView extends CustomComponent implements View {
+public class SentQuotationsView extends CustomComponent implements View {
 
   private Grid<Quotation> grid = new Grid<>();
 
@@ -29,7 +29,7 @@ public class QuotationsView extends CustomComponent implements View {
   private User loggedUser;
 
   @Autowired
-  public QuotationsView(QuotationInteractor quotationInteractor) {
+  public SentQuotationsView(QuotationInteractor quotationInteractor) {
     this.quotationInteractor = quotationInteractor;
   }
 
@@ -46,7 +46,7 @@ public class QuotationsView extends CustomComponent implements View {
     grid.addColumn(quotation -> quotation.getDescription()).setCaption("Considerations");
     grid.addColumn(quotation -> quotation.getScheduledTime().toString())
         .setCaption("Scheduled Time");
-    grid.addColumn(quotation -> quotation.getStatus().name()).setCaption("Status");
+    grid.addColumn(quotation -> quotation.getStatus().getValue()).setCaption("Status");
 
     HorizontalLayout main = new HorizontalLayout(grid);
     main.setSizeFull();

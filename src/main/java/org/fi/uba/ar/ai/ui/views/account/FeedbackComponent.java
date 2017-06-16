@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui.views.client;
+package org.fi.uba.ar.ai.ui.views.account;
 
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;

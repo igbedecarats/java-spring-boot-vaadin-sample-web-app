@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui.views.client;
+package org.fi.uba.ar.ai.ui.views.search;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
@@ -17,6 +17,8 @@ import org.fi.uba.ar.ai.global.security.SpringContextUserHolder;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
+import org.fi.uba.ar.ai.ui.views.account.QuotationForm;
+import org.fi.uba.ar.ai.ui.views.account.QuotationModifiedEvent;
 import org.fi.uba.ar.ai.users.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.events.EventBus;
@@ -26,7 +28,7 @@ import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @SpringView(name = "")
-@SideBarItem(sectionId = Sections.SERVICES, caption = "Search", order = 0)
+@SideBarItem(sectionId = Sections.SEARCH, caption = "Search", order = 0)
 @FontAwesomeIcon(FontAwesome.HOME)
 public class SearchServicesView extends CustomComponent implements View {
 

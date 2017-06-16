@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui.views.client;
+package org.fi.uba.ar.ai.ui.views.account;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
@@ -58,7 +58,7 @@ public class ContractComponent extends CustomComponent {
     clientName.setCaption("Client");
     scheduledTime.setValue(contract.getScheduledTime().toString());
     scheduledTime.setCaption("Scheduled Time");
-    status.setValue(contract.getStatus().name());
+    status.setValue(contract.getStatus().getValue());
     status.setCaption("Status");
     done.setVisible(shouldShowDoneButton());
     send.setIcon(VaadinIcons.PAPERPLANE_O);
@@ -77,7 +77,8 @@ public class ContractComponent extends CustomComponent {
   }
 
   private boolean shouldShowDoneButton() {
-    return !contract.isCompleted();
+    return (loggedUser.equals(contract.getClient()) && !contract.isClientApproved()) ||
+        (loggedUser.equals(contract.getService().getProvider()) && !contract.isProviderApproved());
   }
 
   private void send() {

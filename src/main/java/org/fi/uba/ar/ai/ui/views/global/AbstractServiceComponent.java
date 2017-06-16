@@ -56,7 +56,7 @@ public abstract class AbstractServiceComponent extends VerticalLayout {
     HorizontalLayout locationsContainer = new HorizontalLayout();
     locationsContainer.setCaption("<h2> Ubicación </h2>");
     locationsContainer.setCaptionAsHtml(true);
-    locationArea.setValue(service.getLocation().getArea().name());
+    locationArea.setValue(service.getLocation().getArea().getValue());
     locationName.setValue(service.getLocation().getName());
     locationsContainer.addComponents(locationArea, locationName);
     categoriesAndLocationContainer.addComponents(categoriesContainer, locationsContainer);

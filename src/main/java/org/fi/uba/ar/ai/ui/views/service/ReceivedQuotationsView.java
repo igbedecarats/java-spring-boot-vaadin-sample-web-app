@@ -16,6 +16,7 @@ import org.fi.uba.ar.ai.quotations.domain.Quotation;
 import org.fi.uba.ar.ai.quotations.usecase.QuotationInteractor;
 import org.fi.uba.ar.ai.ui.Sections;
 import org.fi.uba.ar.ai.users.domain.User;
+import org.fi.uba.ar.ai.users.usecase.UserInteractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
@@ -23,19 +24,23 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @Secured("ROLE_PROVIDER")
 @SpringView(name = "myquotations")
-@SideBarItem(sectionId = Sections.ADMIN, caption = "My Pending Quotations", order = 1)
+@SideBarItem(sectionId = Sections.SERVICES, caption = "Received Requests", order = 1)
 @FontAwesomeIcon(FontAwesome.COGS)
-public class ProviderQuotationsView extends CustomComponent implements View {
+public class ReceivedQuotationsView extends CustomComponent implements View {
 
   private Grid<Quotation> grid = new Grid<>();
 
   private QuotationInteractor quotationInteractor;
 
+  private UserInteractor userInteractor;
+
   private User loggedUser;
 
   @Autowired
-  public ProviderQuotationsView(QuotationInteractor quotationInteractor) {
+  public ReceivedQuotationsView(QuotationInteractor quotationInteractor,
+      UserInteractor userInteractor) {
     this.quotationInteractor = quotationInteractor;
+    this.userInteractor = userInteractor;
   }
 
   @Override
@@ -48,10 +53,13 @@ public class ProviderQuotationsView extends CustomComponent implements View {
     grid.addColumn(
         quotation -> quotation.getClient().getFirstName() + " " + quotation.getClient()
             .getLastName()).setCaption("Client");
+    grid.addColumn(
+        quotation -> userInteractor.calculateUserRating(quotation.getClient()).getRating())
+        .setCaption("Rating");
     grid.addColumn(quotation -> quotation.getDescription()).setCaption("Considerations");
     grid.addColumn(quotation -> quotation.getScheduledTime().toString())
         .setCaption("Scheduled Time");
-    grid.addColumn(quotation -> quotation.getStatus().name()).setCaption("Status");
+    grid.addColumn(quotation -> quotation.getStatus().getValue()).setCaption("Status");
     grid.addColumn(person -> "Approve",
         new ButtonRenderer(clickEvent -> {
           approve(clickEvent.getItem());

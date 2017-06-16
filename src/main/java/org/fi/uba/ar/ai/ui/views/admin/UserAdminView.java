@@ -24,7 +24,7 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @Secured("ROLE_ADMIN")
 @SpringView(name = "users")
-@SideBarItem(sectionId = Sections.ADMIN, caption = "Users")
+@SideBarItem(sectionId = Sections.ADMIN, caption = "Users", order = 0)
 @FontAwesomeIcon(FontAwesome.COGS)
 public class UserAdminView extends CustomComponent implements View {
 

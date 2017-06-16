@@ -1,10 +1,11 @@
-package org.fi.uba.ar.ai.ui.views.client;
+package org.fi.uba.ar.ai.ui.views.search;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.usecase.ServiceInteractor;
+import org.fi.uba.ar.ai.ui.views.account.QuotationForm;
 import org.fi.uba.ar.ai.ui.views.global.AbstractServiceComponent;
 import org.fi.uba.ar.ai.users.domain.User;
 

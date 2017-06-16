@@ -19,7 +19,7 @@ import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @SpringView(name = "profile")
-@SideBarItem(sectionId = Sections.ACCOUNT, caption = "Profile")
+@SideBarItem(sectionId = Sections.PROFILE, caption = "Profile")
 @FontAwesomeIcon(FontAwesome.ARCHIVE)
 public class ProfileView extends CustomComponent implements View {
 

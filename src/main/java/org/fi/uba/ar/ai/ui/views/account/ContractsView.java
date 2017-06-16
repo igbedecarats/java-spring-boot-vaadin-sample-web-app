@@ -1,4 +1,4 @@
-package org.fi.uba.ar.ai.ui.views.client;
+package org.fi.uba.ar.ai.ui.views.account;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -21,7 +21,7 @@ import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @SpringView(name = "contracts")
-@SideBarItem(sectionId = Sections.SERVICES, caption = "Contracts", order = 2)
+@SideBarItem(sectionId = Sections.ACCOUNT, caption = "Contracts", order = 0)
 @FontAwesomeIcon(FontAwesome.HOME)
 public class ContractsView extends CustomComponent implements View {
 

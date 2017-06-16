@@ -28,7 +28,7 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @Secured("ROLE_PROVIDER")
 @SpringView(name = "myservices")
-@SideBarItem(sectionId = Sections.ADMIN, caption = "My Services", order = 0)
+@SideBarItem(sectionId = Sections.SERVICES, caption = "My Services", order = 0)
 @FontAwesomeIcon(FontAwesome.COGS)
 public class MyServicesView extends CustomComponent implements View {
 
