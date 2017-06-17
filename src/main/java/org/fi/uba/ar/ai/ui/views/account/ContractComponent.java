@@ -1,6 +1,7 @@
 package org.fi.uba.ar.ai.ui.views.account;
 
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
@@ -64,9 +65,16 @@ public class ContractComponent extends CustomComponent {
     send.setIcon(VaadinIcons.PAPERPLANE_O);
     send.addClickListener(e -> this.send());
     send.setVisible(contract.isCompleted() && !contract.feedbackAlreadyGivenByUser(loggedUser));
-    HorizontalLayout horizontalLayout = new HorizontalLayout(providerName, clientName,
-        scheduledTime, status, done, send);
-    root.addComponentsAndExpand(horizontalLayout);
+    HorizontalLayout labelsHorizontalLayout = new HorizontalLayout(providerName, clientName,
+        scheduledTime, status);
+    labelsHorizontalLayout.setSizeUndefined();
+    HorizontalLayout buttonsHorizontalLayout = new HorizontalLayout(done, send);
+    buttonsHorizontalLayout.setSizeUndefined();
+    buttonsHorizontalLayout.setComponentAlignment(done, Alignment.MIDDLE_LEFT);
+    buttonsHorizontalLayout.setComponentAlignment(send, Alignment.MIDDLE_LEFT);
+    HorizontalLayout contractHorizontalLayout = new HorizontalLayout(labelsHorizontalLayout, buttonsHorizontalLayout);
+    contractHorizontalLayout.setSizeFull();
+    root.addComponentsAndExpand(contractHorizontalLayout);
     VerticalLayout feedbacksContainer = new VerticalLayout();
     List<Feedback> feedbacks = contract.getFeedbacks();
     feedbacks.stream()

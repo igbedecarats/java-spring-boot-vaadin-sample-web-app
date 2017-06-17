@@ -90,7 +90,7 @@ public class MyServicesView extends CustomComponent implements View {
   private void search(String serviceName) {
     servicesContainer.removeAllComponents();
     List<Service> services = serviceInteractor
-        .findAllByProviderIdMatchingName(loggedUser.getId(), serviceName);
+        .findAllByProviderMatchingName(loggedUser, serviceName);
     populateList(services);
   }
 

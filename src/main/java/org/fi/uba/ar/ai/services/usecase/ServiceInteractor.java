@@ -1,8 +1,10 @@
 package org.fi.uba.ar.ai.services.usecase;
 
 import com.google.common.collect.Sets;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.Validate;
 import org.fi.uba.ar.ai.feedbacks.domain.Feedback;
@@ -107,10 +109,10 @@ public class ServiceInteractor {
     return services;
   }
 
-  public List<Service> findAllByProviderIdMatchingName(long id, String name) {
+  public List<Service> findAllByProviderMatchingName(User provider, String name) {
     String likeFilter = "%" + name.replace(" ", "%") + "%";
     List<Service> services = serviceRepository
-        .findByProviderIdAndNameIgnoreCaseContaining(id, "%" + likeFilter + "%");
+        .findByProviderIdAndNameIgnoreCaseContaining(provider.getId(), "%" + likeFilter + "%");
     return services;
   }
 
@@ -118,9 +120,16 @@ public class ServiceInteractor {
     String likeFilter = "%" + value.replace(" ", "%") + "%";
     List<Service> services = serviceRepository
         .findByNameIgnoreCaseContaining("%" + likeFilter + "%");
-    return services;
+    return calculateRates(services).stream().map(ratedService -> ratedService.getService()).collect(
+        Collectors.toList());
   }
 
+  public List<RatedService> calculateRates(List<Service> services) {
+    List<RatedService> ratedServices = services.stream().map(service -> calculateRate(service, service.getProvider()))
+        .collect(Collectors.toList());
+    ratedServices.sort(Comparator.comparing(RatedService::getRating).reversed());
+    return ratedServices;
+  }
 
   public RatedService calculateRate(Service service, User user) {
     List<Feedback> feedbacks = feedbackRepository
