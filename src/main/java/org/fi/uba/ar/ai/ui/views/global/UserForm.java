@@ -30,17 +30,17 @@ public class UserForm extends FormLayout {
   private User user;
   private User loggedUser;
 
-  private TextField username = new TextField("Username");
-  private TextField firstName = new TextField("First name");
-  private TextField lastName = new TextField("Last name");
+  private TextField username = new TextField("Usuario");
+  private TextField firstName = new TextField("Nombre");
+  private TextField lastName = new TextField("Apellido");
   private TextField email = new TextField("Email");
   private TextField password = new TextField("Password");
-  private NativeSelect<UserRole> role = new NativeSelect<>("Role");
+  private NativeSelect<UserRole> role = new NativeSelect<>("Rol");
   private final List<String> existingLocations;
-  private NativeSelect<String> locations = new NativeSelect<>("Location");
-  private Button save = new Button("Save");
+  private NativeSelect<String> locations = new NativeSelect<>("Ubicacion");
+  private Button save = new Button("Guardar");
   private Button delete = new ConfirmButton(VaadinIcons.TRASH,
-      "Are you sure you want to delete the entry?", this::delete);
+      "¿Estas seguro que queres borrar este usuario?", this::delete);
 
   public UserForm(User loggedUser, UserInteractor userInteractor,
       LocationInteractor locationInteractor, Runnable function) {
@@ -76,7 +76,7 @@ public class UserForm extends FormLayout {
       if (function != null) {
         function.run();
       }
-      Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+      Notification.show("Éxito!", Type.HUMANIZED_MESSAGE);
       setVisible(false);
     } catch (Exception e) {
       Notification
@@ -119,7 +119,7 @@ public class UserForm extends FormLayout {
         setVisible(false);
       }
       Notification
-          .show("Success!", Type.HUMANIZED_MESSAGE);
+          .show("Éxito!", Type.HUMANIZED_MESSAGE);
     } catch (Exception e) {
       Notification
           .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);

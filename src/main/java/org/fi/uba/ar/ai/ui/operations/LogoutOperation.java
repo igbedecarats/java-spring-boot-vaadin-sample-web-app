@@ -9,7 +9,7 @@ import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @SpringComponent
-@SideBarItem(sectionId = Sections.OPERATIONS, caption = "Logout")
+@SideBarItem(sectionId = Sections.OPERATIONS, caption = "Salir")
 @FontAwesomeIcon(FontAwesome.POWER_OFF)
 public class LogoutOperation implements Runnable {
 

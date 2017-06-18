@@ -74,10 +74,10 @@ public class LocationInteractor {
 
   public List<Location> findNearBy(String locationName) {
     Location location = repository.findByNameIgnoreCase(locationName);
-    double latDown = location.getCoordinate().getLatitude() - 0.07;
-    double latTop = location.getCoordinate().getLatitude() + 0.07;
-    double lngDown = location.getCoordinate().getLongitude() - 0.07;
-    double lngTop = location.getCoordinate().getLongitude() + 0.07;
+    double latDown = location.getCoordinate().getLatitude() - 0.08;
+    double latTop = location.getCoordinate().getLatitude() + 0.08;
+    double lngDown = location.getCoordinate().getLongitude() - 0.08;
+    double lngTop = location.getCoordinate().getLongitude() + 0.08;
     return repository
         .findByCoordinateLatitudeBetweenAndCoordinateLongitudeBetween(latDown, latTop, lngDown,
             lngTop);

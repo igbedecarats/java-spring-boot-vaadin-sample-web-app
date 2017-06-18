@@ -24,8 +24,8 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @Secured("ROLE_ADMIN")
 @SpringView(name = "users")
-@SideBarItem(sectionId = Sections.ADMIN, caption = "Users", order = 0)
-@FontAwesomeIcon(FontAwesome.COGS)
+@SideBarItem(sectionId = Sections.ADMIN, caption = "Usuarios", order = 0)
+@FontAwesomeIcon(FontAwesome.USERS)
 public class UserAdminView extends CustomComponent implements View {
 
   private UserInteractor userInteractor;
@@ -50,7 +50,7 @@ public class UserAdminView extends CustomComponent implements View {
 
     final VerticalLayout layout = new VerticalLayout();
 
-    Button addUserBtn = new Button("Add new customer");
+    Button addUserBtn = new Button("Agregar nuevo usuario");
     addUserBtn.addClickListener(e -> {
       grid.asSingleSelect().clear();
       form.setUser(new User());

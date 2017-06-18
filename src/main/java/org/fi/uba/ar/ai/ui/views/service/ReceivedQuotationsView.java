@@ -24,8 +24,8 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @Secured("ROLE_PROVIDER")
 @SpringView(name = "myquotations")
-@SideBarItem(sectionId = Sections.SERVICES, caption = "Received Requests", order = 1)
-@FontAwesomeIcon(FontAwesome.COGS)
+@SideBarItem(sectionId = Sections.SERVICES, caption = "Pedidos Recibidos", order = 1)
+@FontAwesomeIcon(FontAwesome.COMMENTS_O)
 public class ReceivedQuotationsView extends CustomComponent implements View {
 
   private Grid<Quotation> grid = new Grid<>();
@@ -49,23 +49,23 @@ public class ReceivedQuotationsView extends CustomComponent implements View {
 
     final VerticalLayout layout = new VerticalLayout();
 
-    grid.addColumn(quotation -> quotation.getService().getName()).setCaption("Service");
+    grid.addColumn(quotation -> quotation.getService().getName()).setCaption("Servicio");
     grid.addColumn(
         quotation -> quotation.getClient().getFirstName() + " " + quotation.getClient()
-            .getLastName()).setCaption("Client");
+            .getLastName()).setCaption("Cliente");
     grid.addColumn(
         quotation -> userInteractor.calculateUserRating(quotation.getClient()).getRating())
-        .setCaption("Rating");
-    grid.addColumn(quotation -> quotation.getDescription()).setCaption("Considerations");
+        .setCaption("Calificacion");
+    grid.addColumn(quotation -> quotation.getDescription()).setCaption("Consideraciones");
     grid.addColumn(quotation -> quotation.getScheduledTime().toString())
-        .setCaption("Scheduled Time");
-    grid.addColumn(quotation -> quotation.getStatus().getValue()).setCaption("Status");
-    grid.addColumn(person -> "Approve",
+        .setCaption("Tiempo Agendado");
+    grid.addColumn(quotation -> quotation.getStatus().getValue()).setCaption("Estado");
+    grid.addColumn(person -> "Aprobar",
         new ButtonRenderer(clickEvent -> {
           approve(clickEvent.getItem());
           updateGrid();
         }));
-    grid.addColumn(person -> "Decline",
+    grid.addColumn(person -> "Rechazar",
         new ButtonRenderer(clickEvent -> {
           decline(clickEvent.getItem());
           updateGrid();
@@ -87,7 +87,7 @@ public class ReceivedQuotationsView extends CustomComponent implements View {
       Quotation quotation = (Quotation) item;
       if (quotation.isCreated()) {
         quotationInteractor.decline(quotation);
-        Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+        Notification.show("Éxito!", Type.HUMANIZED_MESSAGE);
       } else {
         Notification
             .show("Quotation already marked as " + quotation.getStatus(), Type.WARNING_MESSAGE);
@@ -103,7 +103,7 @@ public class ReceivedQuotationsView extends CustomComponent implements View {
       Quotation quotation = (Quotation) item;
       if (quotation.isCreated()) {
         quotationInteractor.approve(quotation);
-        Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+        Notification.show("Éxito!", Type.HUMANIZED_MESSAGE);
       } else {
         Notification
             .show("Quotation already marked as " + quotation.getStatus(), Type.WARNING_MESSAGE);

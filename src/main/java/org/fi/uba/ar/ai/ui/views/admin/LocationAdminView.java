@@ -21,8 +21,8 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @Secured("ROLE_ADMIN")
 @SpringView(name = "locations")
-@SideBarItem(sectionId = Sections.ADMIN, caption = "Locations", order = 1)
-@FontAwesomeIcon(FontAwesome.COGS)
+@SideBarItem(sectionId = Sections.ADMIN, caption = "Ubicaciones", order = 1)
+@FontAwesomeIcon(FontAwesome.MAP_MARKER)
 public class LocationAdminView extends CustomComponent implements View {
 
   private LocationInteractor locationInteractor;
@@ -39,7 +39,7 @@ public class LocationAdminView extends CustomComponent implements View {
 
     final VerticalLayout layout = new VerticalLayout();
 
-    Button addLocationBtn = new Button("Add new location");
+    Button addLocationBtn = new Button("Agregar Nueva Ubicación");
     addLocationBtn.addClickListener(e -> {
       grid.asSingleSelect().clear();
       form.setLocation(new Location());
@@ -48,10 +48,10 @@ public class LocationAdminView extends CustomComponent implements View {
     HorizontalLayout toolbar = new HorizontalLayout(addLocationBtn);
 
     grid.addColumn(Location::getId).setCaption("Id");
-    grid.addColumn(Location::getName).setCaption("Name");
+    grid.addColumn(Location::getName).setCaption("Nombre");
     grid.addColumn(Location::getArea).setCaption("Area");
-    grid.addColumn(Location::getLatitude).setCaption("Latitude");
-    grid.addColumn(Location::getLongitude).setCaption("Longitude");
+    grid.addColumn(Location::getLatitude).setCaption("Latitud");
+    grid.addColumn(Location::getLongitude).setCaption("Longitud");
 
     HorizontalLayout main = new HorizontalLayout(grid, form);
     main.setSizeFull();

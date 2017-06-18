@@ -59,14 +59,14 @@ public class SignUpScreen extends CustomComponent {
   }
 
   private void initLayout() {
-    username = new TextField("Username");
-    firstName = new TextField("First name");
-    lastName = new TextField("Last name");
+    username = new TextField("Usuario");
+    firstName = new TextField("Nombre");
+    lastName = new TextField("Apellido");
     email = new TextField("Email");
     password = new PasswordField("Password");
-    isProvider = new CheckBox("Create a Service Provider account?");
-    locations = new NativeSelect<>("Location");
-    signUpButton = new Button("Sign Up");
+    isProvider = new CheckBox("Vas a publicar Servicios?");
+    locations = new NativeSelect<>("Ubicacion");
+    signUpButton = new Button("Registrarse");
 
     existingLocations = this.locationInteractor.findAll().stream()
         .map(location -> location.getName()).collect(

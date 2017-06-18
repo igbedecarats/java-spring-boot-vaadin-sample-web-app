@@ -28,8 +28,8 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @Secured("ROLE_PROVIDER")
 @SpringView(name = "myservices")
-@SideBarItem(sectionId = Sections.SERVICES, caption = "My Services", order = 0)
-@FontAwesomeIcon(FontAwesome.COGS)
+@SideBarItem(sectionId = Sections.SERVICES, caption = "Mis Servicios", order = 0)
+@FontAwesomeIcon(FontAwesome.CUBES)
 public class MyServicesView extends CustomComponent implements View {
 
   private User loggedUser;
@@ -57,7 +57,7 @@ public class MyServicesView extends CustomComponent implements View {
     HorizontalLayout hl = new HorizontalLayout();
     hl.setSizeUndefined();
     TextField searchTextField = new TextField();
-    searchTextField.setPlaceholder("Search by Name");
+    searchTextField.setPlaceholder("Buscar por nombre");
     searchTextField.addValueChangeListener(e -> search(searchTextField.getValue()));
     searchTextField.setWidth("600px");
     Button add = new Button();
@@ -72,7 +72,7 @@ public class MyServicesView extends CustomComponent implements View {
     rootLayout.setSizeFull();
     rootLayout.setComponentAlignment(searchAndAddLayout, Alignment.TOP_CENTER);
 
-    Panel panel = new Panel("Services");
+    Panel panel = new Panel("Servicios");
     panel.setWidth("1000px");
     panel.setHeight("450px");
     servicesContainer.setSizeUndefined();

@@ -21,8 +21,8 @@ import org.vaadin.spring.sidebar.annotation.FontAwesomeIcon;
 import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @SpringView(name = "contracts")
-@SideBarItem(sectionId = Sections.ACCOUNT, caption = "Contracts", order = 0)
-@FontAwesomeIcon(FontAwesome.HOME)
+@SideBarItem(sectionId = Sections.ACCOUNT, caption = "Contratos", order = 0)
+@FontAwesomeIcon(FontAwesome.SHOPPING_CART)
 public class ContractsView extends CustomComponent implements View {
 
   private ContractInteractor contractInteractor;
@@ -45,7 +45,7 @@ public class ContractsView extends CustomComponent implements View {
     loggedUser = SpringContextUserHolder.getUser();
     VerticalLayout rootLayout = new VerticalLayout();
     rootLayout.setSizeFull();
-    Panel panel = new Panel("Contracts");
+    Panel panel = new Panel("Contratos");
     panel.setWidth("1000px");
     panel.setHeight("600px");
     contractContainer.setSizeUndefined();

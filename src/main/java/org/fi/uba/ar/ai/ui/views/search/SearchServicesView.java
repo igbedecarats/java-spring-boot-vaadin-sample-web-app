@@ -39,7 +39,7 @@ import org.vaadin.spring.sidebar.annotation.SideBarItem;
 
 @SpringView(name = "")
 @SideBarItem(sectionId = Sections.SEARCH, caption = "Search", order = 0)
-@FontAwesomeIcon(FontAwesome.HOME)
+@FontAwesomeIcon(FontAwesome.SEARCH)
 public class SearchServicesView extends CustomComponent implements View {
 
   private User loggedUser;

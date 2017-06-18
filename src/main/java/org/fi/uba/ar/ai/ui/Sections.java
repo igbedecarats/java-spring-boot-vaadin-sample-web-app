@@ -7,9 +7,9 @@ import org.vaadin.spring.sidebar.annotation.SideBarSections;
 @Component
 @SideBarSections({
     @SideBarSection(id = Sections.SEARCH),
-    @SideBarSection(id = Sections.ACCOUNT, caption = "Account"),
-    @SideBarSection(id = Sections.SERVICES, caption = "Services"),
-    @SideBarSection(id = Sections.PROFILE, caption = "Profile"),
+    @SideBarSection(id = Sections.ACCOUNT, caption = "Cuenta"),
+    @SideBarSection(id = Sections.SERVICES, caption = "Servicios"),
+    @SideBarSection(id = Sections.PROFILE, caption = "Perfil"),
     @SideBarSection(id = Sections.ADMIN, caption = "Admin"),
     @SideBarSection(id = Sections.OPERATIONS)
 })

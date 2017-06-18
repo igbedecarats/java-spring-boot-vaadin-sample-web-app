@@ -35,19 +35,19 @@ public class ServiceForm extends AbstractForm<Service> {
 
   private Binder<Service> binder = new Binder<>(Service.class);
 
-  private TextField name = new TextField("Name");
-  private TextField description = new TextField("Description");
+  private TextField name = new TextField("Nombre");
+  private TextField description = new TextField("Descripción");
   private List<String> existingCategories;
-  private NativeSelect<String> categories = new NativeSelect<>("Categories");
+  private NativeSelect<String> categories = new NativeSelect<>("Categorias");
   private List<String> existingSubCategories;
-  private NativeSelect<String> subCategories = new NativeSelect<>("Sub Categories");
+  private NativeSelect<String> subCategories = new NativeSelect<>("Sub Categorias");
   private List<String> existingLocations;
-  private NativeSelect<String> locations = new NativeSelect<>("Location");
-  private TextField startTime = new TextField("Start Time");
-  private TextField endTime = new TextField("End Time");
+  private NativeSelect<String> locations = new NativeSelect<>("Ubicación");
+  private TextField startTime = new TextField("Tiempo Inicio");
+  private TextField endTime = new TextField("Tiempo Fin");
   private List<String> daysOfTheWeek = Service.getLocalizedDaysOfTheWeek();
-  private NativeSelect<String> startDays = new NativeSelect<>("Start Day");
-  private NativeSelect<String> endDays = new NativeSelect<>("End Day");
+  private NativeSelect<String> startDays = new NativeSelect<>("Dia Inicio");
+  private NativeSelect<String> endDays = new NativeSelect<>("Dia Fin");
 
   private final HorizontalLayout categoriesContainer = new HorizontalLayout();
   private final HorizontalLayout timesContainer = new HorizontalLayout();
@@ -96,7 +96,7 @@ public class ServiceForm extends AbstractForm<Service> {
 
     setSavedHandler(service -> save());
     setResetHandler(service -> eventBus.publish(this, new ServiceCreatedEvent(service)));
-    setModalWindowTitle("Service");
+    setModalWindowTitle("Servicio");
     this.setSizeUndefined();
   }
 
@@ -146,7 +146,7 @@ public class ServiceForm extends AbstractForm<Service> {
       serviceInteractor.save(service);
       eventBus.publish(this, new ServiceCreatedEvent(service));
       Notification
-          .show("Success!", Type.HUMANIZED_MESSAGE);
+          .show("Éxito!", Type.HUMANIZED_MESSAGE);
     } catch (Exception ex) {
       Notification
           .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);

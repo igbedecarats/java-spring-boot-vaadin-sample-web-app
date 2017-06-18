@@ -31,8 +31,8 @@ public class QuotationForm extends AbstractForm<Quotation> {
   private final EventBus.SessionEventBus eventBus;
 
 
-  private DateTimeField scheduledTime = new DateTimeField("Scheduled");
-  private TextArea description = new TextArea("Considerations");
+  private DateTimeField scheduledTime = new DateTimeField("Agendadar para");
+  private TextArea description = new TextArea("Consideraciones");
 
   @Autowired
   public QuotationForm(QuotationInteractor quotationInteractor, EventBus.SessionEventBus eventBus) {
@@ -45,7 +45,7 @@ public class QuotationForm extends AbstractForm<Quotation> {
     scheduledTime.setValue(LocalDateTime.now());
     setSavedHandler(quotation -> send());
     setResetHandler(quotation -> eventBus.publish(this, new QuotationModifiedEvent(quotation)));
-    setModalWindowTitle("Send Quotation");
+    setModalWindowTitle("Enviar Pedido");
     setSizeUndefined();
   }
 
@@ -54,7 +54,7 @@ public class QuotationForm extends AbstractForm<Quotation> {
       Quotation quotation = quotationInteractor.create(description.getValue(), loggedUser, service, scheduledTime.getValue());
       // send the event for other parts of the application
       eventBus.publish(this, new QuotationModifiedEvent(quotation));
-      Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+      Notification.show("Éxito!", Type.HUMANIZED_MESSAGE);
     } catch (Exception e) {
       Notification
           .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);

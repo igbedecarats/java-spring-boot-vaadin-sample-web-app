@@ -16,7 +16,7 @@ public class MyServiceComponent extends AbstractServiceComponent {
 
   private Button edit = new Button();
   private Button delete = new ConfirmButton(VaadinIcons.TRASH,
-      "Are you sure you want to delete the entry?", this::delete);
+      "¿Estas seguro que queres borrar este servicio?", this::delete);
 
   private Service service;
   private ServiceInteractor serviceInteractor;
@@ -49,7 +49,7 @@ public class MyServiceComponent extends AbstractServiceComponent {
     try {
       serviceInteractor.delete(service);
       componentContainer.updateList();
-      Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+      Notification.show("Éxito!", Type.HUMANIZED_MESSAGE);
     } catch (Exception e) {
       Notification
           .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);

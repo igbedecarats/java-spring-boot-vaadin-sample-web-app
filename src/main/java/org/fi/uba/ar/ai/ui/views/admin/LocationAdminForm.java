@@ -24,13 +24,13 @@ public class LocationAdminForm extends FormLayout {
   private Location location;
   private Binder<Location> binder = new Binder<>(Location.class);
 
-  private TextField name = new TextField("Name");
+  private TextField name = new TextField("Nombre");
   private NativeSelect<LocationArea> area = new NativeSelect<>("Area");
   private Label latitude = new Label();
   private Label longitude = new Label();
-  private Button save = new Button("Save");
+  private Button save = new Button("Guardar");
   private Button delete = new ConfirmButton(VaadinIcons.TRASH,
-      "Are you sure you want to delete the entry?", this::delete);
+      "Estas seguro que queres borrarlo?", this::delete);
 
   public LocationAdminForm(LocationInteractor locationInteractor,
       LocationAdminView formContainer) {
@@ -51,7 +51,7 @@ public class LocationAdminForm extends FormLayout {
       locationInteractor.delete(location);
       formContainer.updateList();
       setVisible(false);
-      Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+      Notification.show("Éxito!", Type.HUMANIZED_MESSAGE);
     } catch (Exception e) {
       Notification
           .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);
@@ -63,7 +63,7 @@ public class LocationAdminForm extends FormLayout {
       locationInteractor.save(location);
       formContainer.updateList();
       setVisible(false);
-      Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+      Notification.show("Éxito!", Type.HUMANIZED_MESSAGE);
     } catch (Exception e) {
       Notification
           .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);

@@ -53,17 +53,17 @@ public class LoginScreen extends CustomComponent {
   public void setLoggedOut(boolean loggedOut) {
     //loggedOutLabel.setVisible(loggedOut);
     if (loggedOut) {
-      Notification.show("Goodbye!", Type.HUMANIZED_MESSAGE);
+      Notification.show("Hasta Pronto!", Type.HUMANIZED_MESSAGE);
     }
   }
 
   private void initLayout() {
     FormLayout loginForm = new FormLayout();
     loginForm.setSizeUndefined();
-    userName = new TextField("Username");
+    userName = new TextField("Usuario");
     passwordField = new PasswordField("Password");
-    login = new Button("Login");
-    signUp = new Button("Sign Up");
+    login = new Button("Entrar");
+    signUp = new Button("Registrarse");
     loginForm.addComponent(userName);
     loginForm.addComponent(passwordField);
     loginForm.addComponent(login);

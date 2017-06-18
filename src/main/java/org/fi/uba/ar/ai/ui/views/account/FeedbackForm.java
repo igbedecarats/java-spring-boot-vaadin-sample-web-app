@@ -28,8 +28,8 @@ public class FeedbackForm extends AbstractForm<Feedback> {
 
   private final EventBus.SessionEventBus eventBus;
 
-  private TextArea comment = new TextArea("Comment");
-  private NativeSelect<Integer> ratings = new NativeSelect<>("Rating");
+  private TextArea comment = new TextArea("Comentario");
+  private NativeSelect<Integer> ratings = new NativeSelect<>("Calificación");
 
   @Autowired
   public FeedbackForm(FeedbackInteractor feedbackInteractor, EventBus.SessionEventBus eventBus) {
@@ -40,7 +40,7 @@ public class FeedbackForm extends AbstractForm<Feedback> {
     ratings.setEmptySelectionAllowed(false);
     setSavedHandler(feedback -> send());
     setResetHandler(feedback -> eventBus.publish(this, new FeedbackSubmittedEvent(feedback)));
-    setModalWindowTitle("Send Feedback");
+    setModalWindowTitle("Enviar Evaluación");
     setSizeUndefined();
   }
 
@@ -51,7 +51,7 @@ public class FeedbackForm extends AbstractForm<Feedback> {
               .getValue());
       // send the event for other parts of the application
       eventBus.publish(this, new FeedbackSubmittedEvent(feedback));
-      Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+      Notification.show("Éxito!", Type.HUMANIZED_MESSAGE);
     } catch (Exception e) {
       Notification
           .show("Unable to process request, please contact the system admin", Type.ERROR_MESSAGE);

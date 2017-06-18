@@ -28,7 +28,7 @@ public class ContractComponent extends CustomComponent {
   private Label scheduledTime = new Label();
   private Label status = new Label();
   private Button done = new ConfirmButton(VaadinIcons.CHECK,
-      "Are you sure you want to mark it as done?", this::done);
+      "¿Estas seguro que queres marcarla como terminada?", this::done);
   private Button send = new Button();
 
   private User loggedUser;
@@ -48,19 +48,19 @@ public class ContractComponent extends CustomComponent {
     this.feedbackForm = feedbackForm;
 
     serviceName.setValue(contract.getService().getName());
-    serviceName.setCaption("Service");
+    serviceName.setCaption("Servicio");
     User provider = contract.getService().getProvider();
     providerName.setValue(provider.getFirstName() + " " + provider.getLastName());
     providerName.setVisible(!loggedUser.equals(provider));
-    providerName.setCaption("Provider");
+    providerName.setCaption("Provedor");
     User client = contract.getClient();
     clientName.setValue(client.getFirstName() + " " + client.getLastName());
     clientName.setVisible(!loggedUser.equals(client));
-    clientName.setCaption("Client");
+    clientName.setCaption("Cliente");
     scheduledTime.setValue(contract.getScheduledTime().toString());
-    scheduledTime.setCaption("Scheduled Time");
+    scheduledTime.setCaption("Tiempo Acordado");
     status.setValue(contract.getStatus().getValue());
-    status.setCaption("Status");
+    status.setCaption("Estado");
     done.setVisible(shouldShowDoneButton());
     send.setIcon(VaadinIcons.PAPERPLANE_O);
     send.addClickListener(e -> this.send());
@@ -97,7 +97,7 @@ public class ContractComponent extends CustomComponent {
   private void done() {
     try {
       contractInteractor.markAsDoneByUser(contract, loggedUser);
-      Notification.show("Success!", Type.HUMANIZED_MESSAGE);
+      Notification.show("Éxito!", Type.HUMANIZED_MESSAGE);
       eventBus.publish(this, new ContractMarkedDoneEvent(contract));
     } catch (Exception e) {
       Notification
