@@ -83,6 +83,9 @@ public class SearchServicesView extends CustomComponent implements View {
     searchTextField.setEnabled(true);
     nearBy = new CheckBox("Cerca tuyo");
     nearBy.setEnabled(true);
+    nearBy.addValueChangeListener(event -> simpleSearch(
+        StringUtils.isNotBlank(searchTextField.getValue()) ? searchTextField.getValue()
+            : StringUtils.EMPTY));
     advanceSearch = new CheckBox("Búsqueda avanzada");
     simpleSearchLayout.addComponents(searchTextField, nearBy, advanceSearch);
     simpleSearchLayout.setSizeUndefined();
@@ -160,14 +163,15 @@ public class SearchServicesView extends CustomComponent implements View {
         searchEndDays = Service.getDayOfTheWeekFromLocalizedDay(endDays.getSelectedItem().get());
       }
       List<Service> services = serviceInteractor
-          .searchBy(StringUtils.EMPTY, searchAreas, searchCategories, searchStartDay, searchEndDays);
+          .searchBy(StringUtils.EMPTY, searchAreas, searchCategories, searchStartDay,
+              searchEndDays);
       populateServicesContainer(services);
     }
   }
 
   private void simpleSearch(String value) {
     List<Service> services = removeLoggedUserFromServiceList(
-        serviceInteractor.findAllMatchingName(value));
+        serviceInteractor.findAllMatchingName(value, loggedUser, nearBy.getValue()));
     populateServicesContainer(services);
   }
 

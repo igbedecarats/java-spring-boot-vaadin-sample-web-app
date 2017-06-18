@@ -11,7 +11,7 @@ import org.fi.uba.ar.ai.feedbacks.domain.Feedback;
 import org.fi.uba.ar.ai.feedbacks.domain.FeedbackRepository;
 import org.fi.uba.ar.ai.locations.domain.Location;
 import org.fi.uba.ar.ai.locations.domain.LocationArea;
-import org.fi.uba.ar.ai.locations.domain.LocationRepository;
+import org.fi.uba.ar.ai.locations.usecase.LocationInteractor;
 import org.fi.uba.ar.ai.services.domain.RatedService;
 import org.fi.uba.ar.ai.services.domain.Service;
 import org.fi.uba.ar.ai.services.domain.ServiceCategory;
@@ -32,7 +32,7 @@ public class ServiceInteractor {
 
   private UserRepository userRepository;
 
-  private LocationRepository locationRepository;
+  private LocationInteractor locationInteractor;
 
   private FeedbackRepository feedbackRepository;
 
@@ -40,13 +40,13 @@ public class ServiceInteractor {
       ServiceCategoryRepository serviceCategoryRepository,
       ServiceSubCategoryRepository serviceSubCategoryRepository,
       UserRepository userRepository,
-      LocationRepository locationRepository,
+      LocationInteractor locationInteractor,
       FeedbackRepository feedbackRepository) {
     this.serviceRepository = serviceRepository;
     this.serviceCategoryRepository = serviceCategoryRepository;
     this.serviceSubCategoryRepository = serviceSubCategoryRepository;
     this.userRepository = userRepository;
-    this.locationRepository = locationRepository;
+    this.locationInteractor = locationInteractor;
     this.feedbackRepository = feedbackRepository;
   }
 
@@ -63,7 +63,7 @@ public class ServiceInteractor {
     User provider = userRepository.findOne(request.getProviderId()).orElseThrow(
         () -> new EntityNotFoundException(
             "The provider with id " + request.getProviderId() + " doesn't exist."));
-    Location location = locationRepository.findOne(request.getLocationId()).orElseThrow(
+    Location location = locationInteractor.find(request.getLocationId()).orElseThrow(
         () -> new EntityNotFoundException(
             "The location with id " + request.getLocationId() + " doesn't exist."));
     ServiceCategory category = this.getServiceCategory(request.getCategoryId());
@@ -117,10 +117,18 @@ public class ServiceInteractor {
     return services;
   }
 
-  public List<Service> findAllMatchingName(String value) {
+  public List<Service> findAllMatchingName(String value,
+      User loggedUser, Boolean searchNearby) {
     String likeFilter = "%" + value.replace(" ", "%") + "%";
-    List<Service> services = serviceRepository
-        .findByNameIgnoreCaseContaining("%" + likeFilter + "%");
+    List<Service> services;
+    if (searchNearby) {
+      List<Location> locations = locationInteractor.findNearBy(loggedUser.getLocation().getName());
+      services = serviceRepository
+          .findByNameIgnoreCaseContainingAndLocationIn("%" + likeFilter + "%", locations);
+    } else {
+      services = serviceRepository
+          .findByNameIgnoreCaseContaining("%" + likeFilter + "%");
+    }
     return orderServicesByFeedbackRatingDesc(services);
   }
 

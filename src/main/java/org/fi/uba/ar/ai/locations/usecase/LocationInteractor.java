@@ -8,6 +8,7 @@ import com.google.maps.model.GeocodingResult;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.fi.uba.ar.ai.locations.domain.Coordinate;
 import org.fi.uba.ar.ai.locations.domain.Location;
@@ -73,10 +74,10 @@ public class LocationInteractor {
 
   public List<Location> findNearBy(String locationName) {
     Location location = repository.findByNameIgnoreCase(locationName);
-    double latDown = location.getCoordinate().getLatitude() - 0.1;
-    double latTop = location.getCoordinate().getLatitude() + 0.1;
-    double lngDown = location.getCoordinate().getLongitude() - 0.1;
-    double lngTop = location.getCoordinate().getLongitude() + 0.1;
+    double latDown = location.getCoordinate().getLatitude() - 0.07;
+    double latTop = location.getCoordinate().getLatitude() + 0.07;
+    double lngDown = location.getCoordinate().getLongitude() - 0.07;
+    double lngTop = location.getCoordinate().getLongitude() + 0.07;
     return repository
         .findByCoordinateLatitudeBetweenAndCoordinateLongitudeBetween(latDown, latTop, lngDown,
             lngTop);
@@ -98,5 +99,9 @@ public class LocationInteractor {
       location.setCoordinate(coordinateForLocation);
     }
     return repository.save(location);
+  }
+
+  public Optional<Location> find(long locationId) {
+    return repository.findOne(locationId);
   }
 }
