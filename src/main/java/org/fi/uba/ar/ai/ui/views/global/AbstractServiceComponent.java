@@ -1,6 +1,7 @@
 package org.fi.uba.ar.ai.ui.views.global;
 
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -25,6 +26,8 @@ public abstract class AbstractServiceComponent extends VerticalLayout {
   protected Label rating = new Label();
   protected Service service;
 
+  protected HorizontalLayout providerContainer;
+
   public AbstractServiceComponent(final Service service, final User loggedUser,
       final ServiceInteractor serviceInteractor) {
     Validate.notNull(service, "The Service cannot be null.");
@@ -32,21 +35,21 @@ public abstract class AbstractServiceComponent extends VerticalLayout {
     Validate.notNull(serviceInteractor, "The ServiceInteractor cannot be null.");
     this.service = service;
 
-    name.setCaption("<h2> Servicio </h2> ");
+    name.setCaption("<h4> Servicio </h4> ");
     name.setCaptionAsHtml(true);
     name.setValue(service.getName());
     name.setContentMode(ContentMode.TEXT);
-    name.setStyleName(ValoTheme.LABEL_H3);
-    addComponent(name);
+    name.setStyleName(ValoTheme.LABEL_BOLD);
 
-    description.setCaption("<h2> Descripción </h2>");
+    description.setCaption("<h4> Descripción </h4>");
     description.setCaptionAsHtml(true);
     description.setValue(service.getDescription());
-    addComponent(description);
+
+    HorizontalLayout hl1 = new HorizontalLayout(name, description);
 
     HorizontalLayout categoriesAndLocationContainer = new HorizontalLayout();
     HorizontalLayout categoriesContainer = new HorizontalLayout();
-    categoriesContainer.setCaption("<h2> Categoría </h2>");
+    categoriesContainer.setCaption("<h4> Categoría </h4>");
     categoriesContainer.setCaptionAsHtml(true);
     category.setValue(service.getCategory().getName());
     String subCategoryName = service.getSubCategory().getName();
@@ -54,35 +57,41 @@ public abstract class AbstractServiceComponent extends VerticalLayout {
         .setValue(StringUtils.isNotBlank(subCategoryName) ? subCategoryName : StringUtils.EMPTY);
     categoriesContainer.addComponents(category, subCategory);
     HorizontalLayout locationsContainer = new HorizontalLayout();
-    locationsContainer.setCaption("<h2> Ubicación </h2>");
+    locationsContainer.setCaption("<h4> Ubicación </h4>");
     locationsContainer.setCaptionAsHtml(true);
     locationArea.setValue(service.getLocation().getArea().getValue());
     locationName.setValue(service.getLocation().getName());
     locationsContainer.addComponents(locationArea, locationName);
     categoriesAndLocationContainer.addComponents(categoriesContainer, locationsContainer);
-    addComponent(categoriesAndLocationContainer);
+
 
     HorizontalLayout dayTimeContainer = new HorizontalLayout();
-    dayTimeContainer.setCaption("<h2> Días y Horarios de Atención </h2>");
+    dayTimeContainer.setCaption("<h4> Días y Horarios de Atención </h4>");
     dayTimeContainer.setCaptionAsHtml(true);
     days.setValue(service.getLocalizedStartDay() + " a " + service.getLocalizedEndDay());
     times.setValue(service.getStartTime() + " a " + service.getEndTime());
     dayTimeContainer.addComponents(days, times);
     addComponent(dayTimeContainer);
 
-    HorizontalLayout providerContainer = new HorizontalLayout();
+    HorizontalLayout hl2 = new HorizontalLayout(categoriesAndLocationContainer, dayTimeContainer);
+
+    providerContainer = new HorizontalLayout();
     provider
         .setValue(service.getProvider().getFirstName() + " " + service.getProvider().getLastName());
     provider.setVisible(!loggedUser.equals(service.getProvider()));
-    provider.setStyleName(ValoTheme.LABEL_BOLD);
+    provider.setStyleName(ValoTheme.LABEL_H4);
     rating
         .setValue(Float
             .toString(serviceInteractor.calculateRate(service, service.getProvider()).getRating()));
     providerContainer.addComponents(provider, rating);
-    rating.setStyleName(ValoTheme.LABEL_BOLD);
-    addComponent(providerContainer);
+    rating.setStyleName(ValoTheme.LABEL_H4);
+
+    addComponents(hl1, hl2, providerContainer);
 
     setSizeUndefined();
   }
 
+  protected void addButtonsToProviderContainer(Component... components) {
+    providerContainer.addComponents(components);
+  }
 }

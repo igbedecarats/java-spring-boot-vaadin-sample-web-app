@@ -148,7 +148,7 @@ public class Service {
     this.endDay = getDayOfTheWeekFromLocalizedDay(day);
   }
 
-  private int getDayOfTheWeekFromLocalizedDay(String day) {
+  public static int getDayOfTheWeekFromLocalizedDay(String day) {
     return Arrays.stream(DayOfWeek.values()).filter(dayOfWeek ->
         StringUtils.capitalize(DayOfWeek.of(dayOfWeek.getValue())
             .getDisplayName(TextStyle.FULL, Locale.forLanguageTag("es"))).equals(day)).findFirst()

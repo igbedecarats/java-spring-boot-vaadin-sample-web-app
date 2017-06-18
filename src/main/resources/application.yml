@@ -2,7 +2,9 @@ logging:
   file: logs/serviceya.log
   level:
     org.springframework: INFO
-    com.globant.smu: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 endpoints:
   enabled: false

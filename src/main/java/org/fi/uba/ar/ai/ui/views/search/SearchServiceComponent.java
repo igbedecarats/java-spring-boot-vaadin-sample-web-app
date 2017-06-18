@@ -1,6 +1,7 @@
 package org.fi.uba.ar.ai.ui.views.search;
 
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import org.fi.uba.ar.ai.services.domain.Service;
@@ -27,7 +28,8 @@ public class SearchServiceComponent extends AbstractServiceComponent {
     send.setIcon(VaadinIcons.PAPERPLANE_O);
     send.addClickListener(e -> this.send());
     buttonsContainer.addComponents(send);
-    addComponent(buttonsContainer);
+    buttonsContainer.setComponentAlignment(send, Alignment.BOTTOM_LEFT);
+    addButtonsToProviderContainer(buttonsContainer);
 
     setSizeUndefined();
   }

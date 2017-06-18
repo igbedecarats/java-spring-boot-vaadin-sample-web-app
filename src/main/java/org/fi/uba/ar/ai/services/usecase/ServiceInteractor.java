@@ -10,6 +10,7 @@ import org.apache.commons.lang3.Validate;
 import org.fi.uba.ar.ai.feedbacks.domain.Feedback;
 import org.fi.uba.ar.ai.feedbacks.domain.FeedbackRepository;
 import org.fi.uba.ar.ai.locations.domain.Location;
+import org.fi.uba.ar.ai.locations.domain.LocationArea;
 import org.fi.uba.ar.ai.locations.domain.LocationRepository;
 import org.fi.uba.ar.ai.services.domain.RatedService;
 import org.fi.uba.ar.ai.services.domain.Service;
@@ -120,12 +121,17 @@ public class ServiceInteractor {
     String likeFilter = "%" + value.replace(" ", "%") + "%";
     List<Service> services = serviceRepository
         .findByNameIgnoreCaseContaining("%" + likeFilter + "%");
+    return orderServicesByFeedbackRatingDesc(services);
+  }
+
+  private List<Service> orderServicesByFeedbackRatingDesc(List<Service> services) {
     return calculateRates(services).stream().map(ratedService -> ratedService.getService()).collect(
         Collectors.toList());
   }
 
   public List<RatedService> calculateRates(List<Service> services) {
-    List<RatedService> ratedServices = services.stream().map(service -> calculateRate(service, service.getProvider()))
+    List<RatedService> ratedServices = services.stream()
+        .map(service -> calculateRate(service, service.getProvider()))
         .collect(Collectors.toList());
     ratedServices.sort(Comparator.comparing(RatedService::getRating).reversed());
     return ratedServices;
@@ -142,5 +148,16 @@ public class ServiceInteractor {
       rating = rating / feedbacks.size();
     }
     return new RatedService(service, rating);
+  }
+
+  public List<Service> searchBy(String searchName, List<LocationArea> searchAreas,
+      List<String> searchCategories,
+      Integer searchStartDay, Integer searchEndDays) {
+    String likeFilter = "%" + searchName.replace(" ", "%") + "%";
+    likeFilter = "%" + likeFilter + "%";
+    List<Service> services = serviceRepository
+        .findByNameIgnoreCaseContainingAndLocationAreaInAndCategoryNameInAndStartDayGreaterThanEqualAndEndDayLessThanEqual(
+            likeFilter, searchAreas, searchCategories, searchStartDay, searchEndDays);
+    return orderServicesByFeedbackRatingDesc(services);
   }
 }

@@ -1,6 +1,7 @@
 package org.fi.uba.ar.ai.services.domain;
 
 import java.util.List;
+import org.fi.uba.ar.ai.locations.domain.LocationArea;
 import org.springframework.data.repository.CrudRepository;
 
 public interface ServiceRepository extends CrudRepository<Service, Long> {
@@ -10,4 +11,8 @@ public interface ServiceRepository extends CrudRepository<Service, Long> {
   List<Service> findByProviderId(long id);
 
   List<Service> findByNameIgnoreCaseContaining(String value);
+
+  List<Service> findByNameIgnoreCaseContainingAndLocationAreaInAndCategoryNameInAndStartDayGreaterThanEqualAndEndDayLessThanEqual(
+      String likeFilter, List<LocationArea> searchAreas, List<String> searchCategories,
+      Integer searchStartDay, Integer searchEndDays);
 }

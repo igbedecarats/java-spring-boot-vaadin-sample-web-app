@@ -1,5 +1,6 @@
 package org.fi.uba.ar.ai.locations.domain;
 
+import java.util.Arrays;
 import lombok.Getter;
 
 public enum LocationArea {
@@ -11,5 +12,11 @@ public enum LocationArea {
 
   LocationArea(String value) {
     this.value = value;
+  }
+
+  public static LocationArea getByValue(final String theValue) {
+    return Arrays.asList(LocationArea.values()).stream()
+        .filter(locationArea -> locationArea.getValue().equals(theValue)).findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("No Area was found with " + theValue));
   }
 }

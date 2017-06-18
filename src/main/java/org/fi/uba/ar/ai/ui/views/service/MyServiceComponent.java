@@ -40,7 +40,7 @@ public class MyServiceComponent extends AbstractServiceComponent {
     edit.setIcon(VaadinIcons.EDIT);
     edit.addClickListener(e -> this.edit());
     buttonsContainer.addComponents(edit, delete);
-    addComponent(buttonsContainer);
+    addButtonsToProviderContainer(buttonsContainer);
 
     setSizeUndefined();
   }
